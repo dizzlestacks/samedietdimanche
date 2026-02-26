@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Samedi Et Dimanche — luxury clothing and lifestyle brand.">
+  <meta name="author" content="Damion Wright">
+  <meta name="keywords" content="samedi, dimanche, samedietdimanche, luxury, clothing, bud">
+  <title>SAMEDI ET DIMANCHE</title>
+
+  <link rel="shortcut icon" href="img/newlogo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+
+  <div id="page-transition"></div>
+  <div class="noise"></div>
+  <div id="petals"></div>
+
+  <main class="main-content">
+
+    <div class="logo-wrap animate-in" style="--delay: 0s">
+      <img src="img/newlogo.png" alt="Samedi Et Dimanche" class="logo">
+    </div>
+
+    <nav class="nav-links animate-in" style="--delay: 0.4s">
+
+      <a href="bud.html" class="nav-item">
+        <span class="nav-label">Bud</span>
+        <span class="nav-sub">Weed</span>
+        <div class="nav-line"></div>
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <a href="https://www.samedietdimanche.com/clothing" class="nav-item">
+        <span class="nav-label">Clothing</span>
+        <span class="nav-sub">Collection</span>
+        <div class="nav-line"></div>
+      </a>
+
+    </nav>
+
+  </main>
+
+  <footer class="site-footer animate-in" style="--delay: 0.7s">
+    <p class="copyright">&copy; <span id="year"></span> &nbsp;Samedi Et Dimanche</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+  <script src="js/petals.js"></script>
+</body>
+</html>

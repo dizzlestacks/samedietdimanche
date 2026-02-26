@@ -1,0 +1,16 @@
+h1 {
+	color: white;
+	text-transform: uppercase;
+	position: centered;
+
+}
+body {
+	background-color: black;
+	position: center;
+	text-align: center;
+}
+button {
+	background-color: white;
+	color: black;
+	text-decoration: none;
+}
