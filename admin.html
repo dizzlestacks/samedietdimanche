@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — SAMEDI ET DIMANCHE</title>
+
+  <link rel="shortcut icon" href="img/newlogo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <div class="noise"></div>
+
+  <header class="admin-header">
+    <a href="index.html" class="header-logo-wrap">
+      <img src="img/newlogo.png" alt="Samedi Et Dimanche" class="header-logo">
+      <span class="page-indicator">Admin</span>
+    </a>
+  </header>
+
+  <main class="admin-content">
+
+    <div class="admin-tabs">
+      <button class="tab-btn active" data-tab="shop">Shop Products</button>
+      <button class="tab-btn" data-tab="bud">Bud Menu</button>
+    </div>
+
+    <div id="tab-shop" class="tab-panel active">
+      <div class="admin-toolbar">
+        <h1 class="admin-title">Product Manager</h1>
+        <button id="add-btn" class="admin-btn admin-btn-primary">+ Add Product</button>
+      </div>
+      <div id="product-list" class="product-list">
+        <p class="loading-text">Loading products...</p>
+      </div>
+    </div>
+
+    <div id="tab-bud" class="tab-panel" style="display:none">
+      <div class="admin-toolbar">
+        <h1 class="admin-title">Bud Menu Manager</h1>
+        <button id="bud-add-btn" class="admin-btn admin-btn-primary">+ Add Item</button>
+      </div>
+      <div id="bud-list" class="product-list">
+        <p class="loading-text">Loading menu items...</p>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="edit-modal" class="modal-overlay" style="display:none">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close">&times;</button>
+      <h2 id="modal-title" class="modal-title">Edit Product</h2>
+      <form id="product-form" class="product-form">
+        <input type="hidden" id="form-id">
+        <div class="form-group">
+          <label class="form-label" for="form-name">Name</label>
+          <input type="text" id="form-name" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="form-description">Description</label>
+          <textarea id="form-description" class="form-input form-textarea" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Product Image</label>
+          <div class="image-upload-area" id="image-upload-area">
+            <img id="image-preview" class="image-preview" src="" alt="" style="display:none">
+            <div id="image-placeholder" class="image-placeholder">
+              <span class="upload-icon">+</span>
+              <span class="upload-text">Click to upload image</span>
+            </div>
+            <input type="file" id="form-image" accept="image/*" class="file-input-hidden">
+          </div>
+          <button type="button" id="remove-image-btn" class="remove-image-btn" style="display:none">Remove Image</button>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="form-price">Price (USD)</label>
+            <input type="number" id="form-price" class="form-input" step="0.01" min="0.50" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="form-badge">Badge</label>
+            <select id="form-badge" class="form-input">
+              <option value="">None</option>
+              <option value="new">New</option>
+              <option value="sale">Sale</option>
+              <option value="limited">Limited</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" id="cancel-btn" class="admin-btn">Cancel</button>
+          <button type="submit" id="save-btn" class="admin-btn admin-btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="bud-modal" class="modal-overlay" style="display:none">
+    <div class="modal-content modal-content-wide">
+      <button class="modal-close" id="bud-modal-close">&times;</button>
+      <h2 id="bud-modal-title" class="modal-title">Edit Menu Item</h2>
+      <form id="bud-form" class="product-form">
+        <input type="hidden" id="bud-form-id">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="bud-form-name">Name</label>
+            <input type="text" id="bud-form-name" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bud-form-strain">Strain Type</label>
+            <select id="bud-form-strain" class="form-input">
+              <option value="Sativa">Sativa</option>
+              <option value="Indica">Indica</option>
+              <option value="Hybrid">Hybrid</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="bud-form-category">Category</label>
+            <select id="bud-form-category" class="form-input">
+              <option value="flower">Flower</option>
+              <option value="preroll">Pre-Rolls</option>
+              <option value="edible">Edibles</option>
+              <option value="concentrate">Concentrates</option>
+              <option value="vape">Vapes</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bud-form-price">Price</label>
+            <input type="text" id="bud-form-price" class="form-input" placeholder="$45 / 3.5g">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bud-form-description">Description</label>
+          <textarea id="bud-form-description" class="form-input form-textarea" rows="3"></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Product Image</label>
+          <div class="image-upload-area" id="bud-image-upload-area">
+            <img id="bud-image-preview" class="image-preview" src="" alt="" style="display:none">
+            <div id="bud-image-placeholder" class="image-placeholder">
+              <span class="upload-icon">+</span>
+              <span class="upload-text">Click to upload image</span>
+            </div>
+            <input type="file" id="bud-form-image" accept="image/*" class="file-input-hidden">
+          </div>
+          <button type="button" id="bud-remove-image-btn" class="remove-image-btn" style="display:none">Remove Image</button>
+        </div>
+        <div class="form-row form-row-3">
+          <div class="form-group">
+            <label class="form-label" for="bud-form-thc">THC</label>
+            <input type="text" id="bud-form-thc" class="form-input" placeholder="22%">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bud-form-cbd">CBD</label>
+            <input type="text" id="bud-form-cbd" class="form-input" placeholder="0.5%">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="bud-form-weight">Weight</label>
+            <input type="text" id="bud-form-weight" class="form-input" placeholder="3.5g">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bud-form-terpenes">Terpenes</label>
+          <input type="text" id="bud-form-terpenes" class="form-input" placeholder="Myrcene, Limonene">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="bud-form-effects">Effects (comma-separated)</label>
+          <input type="text" id="bud-form-effects" class="form-input" placeholder="Euphoric, Creative, Energizing">
+        </div>
+        <div class="form-actions">
+          <button type="button" id="bud-cancel-btn" class="admin-btn">Cancel</button>
+          <button type="submit" id="bud-save-btn" class="admin-btn admin-btn-primary">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="js/admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Samedi Et Dimanche — WHERE THE WEEK ENDS. Bud Menu.">
+  <meta name="author" content="Damion Wright">
+  <meta name="keywords" content="samedi, dimanche, samedietdimanche, luxury, cannabis, bud, menu">
+  <title>BUD MENU — SAMEDI ET DIMANCHE</title>
+
+  <link rel="shortcut icon" href="img/newlogo.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/budmenu.css">
+</head>
+<body>
+
+  <div id="page-transition"></div>
+  <div class="noise"></div>
+  <div id="petals"></div>
+
+  <header class="menu-header animate-in" style="--delay: 0s">
+    <a href="bud.html" class="header-logo-wrap">
+      <img src="img/newlogo.png" alt="Samedi Et Dimanche" class="header-logo">
+      <span class="page-indicator">Bud Menu</span>
+    </a>
+  </header>
+
+  <main class="menu-content">
+
+    <div class="menu-hero animate-in" style="--delay: 0.2s">
+      <h1 class="menu-title">The Menu</h1>
+      <p class="menu-subtitle">Premium selections &middot; curated for the weekend</p>
+    </div>
+
+    <div class="menu-filters animate-in" style="--delay: 0.3s">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="flower">Flower</button>
+      <button class="filter-btn" data-filter="preroll">Pre-Rolls</button>
+      <button class="filter-btn" data-filter="edible">Edibles</button>
+      <button class="filter-btn" data-filter="concentrate">Concentrates</button>
+      <button class="filter-btn" data-filter="vape">Vapes</button>
+    </div>
+
+    <div id="menu-grid" class="menu-grid"></div>
+
+  </main>
+
+  <div id="strain-modal" class="modal-overlay" style="display:none">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close">&times;</button>
+      <div class="modal-body">
+        <div class="modal-image-wrap">
+          <img id="modal-image" src="" alt="" class="modal-image">
+        </div>
+        <div class="modal-details">
+          <span id="modal-type-badge" class="type-badge"></span>
+          <h2 id="modal-name" class="modal-name"></h2>
+          <p id="modal-strain" class="modal-strain"></p>
+          <p id="modal-description" class="modal-description"></p>
+          <div class="modal-stats">
+            <div class="stat">
+              <span class="stat-label">THC</span>
+              <span id="modal-thc" class="stat-value"></span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">CBD</span>
+              <span id="modal-cbd" class="stat-value"></span>
+            </div>
+            <div class="stat">
+              <span class="stat-label">Terpenes</span>
+              <span id="modal-terpenes" class="stat-value"></span>
+            </div>
+          </div>
+          <div class="modal-effects">
+            <span class="effects-label">Effects</span>
+            <div id="modal-effects-list" class="effects-list"></div>
+          </div>
+          <p id="modal-price" class="modal-price"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="site-footer animate-in" style="--delay: 0.8s">
+    <p class="copyright">&copy; <span id="year"></span> &nbsp;Samedi Et Dimanche</p>
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+  <script src="js/petals.js"></script>
+  <script src="js/budmenu.js"></script>
+</body>
+</html>

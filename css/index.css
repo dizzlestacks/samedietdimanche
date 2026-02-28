@@ -27,6 +27,8 @@ body {
     radial-gradient(ellipse 70% 50% at 15% 30%, rgba(160, 50, 180, 0.3) 0%, transparent 60%),
     radial-gradient(ellipse 70% 50% at 85% 25%, rgba(230, 90, 160, 0.28) 0%, transparent 60%),
     radial-gradient(ellipse 80% 55% at 50% 90%, rgba(18, 70, 38, 0.45) 0%, rgba(10, 40, 22, 0.2) 50%, transparent 80%);
+  background-size: 100% 100%;
+  background-attachment: fixed;
   color: var(--off-white);
   font-family: var(--font-serif);
   min-height: 100dvh;
