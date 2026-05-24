@@ -411,3 +411,117 @@ async function loadBudItems() {
 
 loadProducts();
 loadBudItems();
+
+// ─── Waitlist ────────────────────────────────────────────
+const waitlistList = document.getElementById('waitlist-list');
+const waitlistCount = document.getElementById('waitlist-count');
+const waitlistExportBtn = document.getElementById('waitlist-export-btn');
+let waitlistEntries = [];
+let waitlistFilter = 'all';
+let waitlistLoaded = false;
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function formatDate(iso) {
+  try {
+    const d = new Date(iso);
+    return d.toLocaleString(undefined, { year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
+  } catch (e) { return iso || ''; }
+}
+
+function renderWaitlist() {
+  if (!waitlistList) return;
+  const rows = waitlistEntries.filter(e => waitlistFilter === 'all' || e.category === waitlistFilter);
+  if (waitlistCount) {
+    waitlistCount.textContent = rows.length + ' ' + (rows.length === 1 ? 'entry' : 'entries');
+  }
+  const plain = document.getElementById('waitlist-plain');
+  if (plain) {
+    plain.value = rows.map(e => `${e.email}\t${e.category}\t${e.created_at}`).join('\n');
+  }
+  if (rows.length === 0) {
+    waitlistList.innerHTML = '<p class="loading-text">No waitlist entries yet.</p>';
+    return;
+  }
+  waitlistList.innerHTML = `
+    <table class="waitlist-table">
+      <thead>
+        <tr><th>Email</th><th>Category</th><th>Joined</th></tr>
+      </thead>
+      <tbody>
+        ${rows.map(e => `
+          <tr>
+            <td class="wl-email-cell">${escapeHtml(e.email)}</td>
+            <td><span class="wl-cat-badge wl-cat-${escapeHtml(e.category)}">${escapeHtml(e.category)}</span></td>
+            <td class="wl-date-cell">${escapeHtml(formatDate(e.created_at))}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+const waitlistCopyBtn = document.getElementById('waitlist-copy-btn');
+if (waitlistCopyBtn) {
+  waitlistCopyBtn.addEventListener('click', async () => {
+    const plain = document.getElementById('waitlist-plain');
+    if (!plain || !plain.value) { showToast('Nothing to copy'); return; }
+    try {
+      await navigator.clipboard.writeText(plain.value);
+      showToast('Copied to clipboard');
+    } catch (e) {
+      plain.select();
+      document.execCommand('copy');
+      showToast('Copied');
+    }
+  });
+}
+
+async function loadWaitlist() {
+  if (!waitlistList) return;
+  try {
+    const res = await fetch('/api/admin/waitlist');
+    if (!res.ok) throw new Error('Failed to fetch');
+    waitlistEntries = await res.json();
+    waitlistLoaded = true;
+    renderWaitlist();
+  } catch (err) {
+    waitlistList.innerHTML = '<p class="loading-text">Could not load waitlist.</p>';
+  }
+}
+
+document.querySelectorAll('.waitlist-filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.waitlist-filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    waitlistFilter = btn.dataset.filter;
+    renderWaitlist();
+  });
+});
+
+if (waitlistExportBtn) {
+  waitlistExportBtn.addEventListener('click', () => {
+    const rows = waitlistEntries.filter(e => waitlistFilter === 'all' || e.category === waitlistFilter);
+    const header = 'email,category,joined_at\n';
+    const body = rows.map(e => `"${(e.email||'').replace(/"/g,'""')}",${e.category},${e.created_at}`).join('\n');
+    const blob = new Blob([header + body], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `waitlist-${waitlistFilter}-${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.tab === 'waitlist' && !waitlistLoaded) loadWaitlist();
+  });
+});

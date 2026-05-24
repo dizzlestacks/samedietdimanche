@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin — SAMEDI ET DIMANCHE</title>
 
-  <link rel="shortcut icon" href="img/newlogo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="180x180" href="img/favicon.png">
+  <link rel="apple-touch-icon" href="img/favicon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,6 +18,7 @@
 </head>
 <body>
 
+  <div id="page-transition"></div>
   <div class="noise"></div>
 
   <header class="admin-header">
@@ -30,6 +33,7 @@
     <div class="admin-tabs">
       <button class="tab-btn active" data-tab="shop">Shop Products</button>
       <button class="tab-btn" data-tab="bud">Bud Menu</button>
+      <button class="tab-btn" data-tab="waitlist">Waitlist</button>
     </div>
 
     <div id="tab-shop" class="tab-panel active">
@@ -49,6 +53,32 @@
       </div>
       <div id="bud-list" class="product-list">
         <p class="loading-text">Loading menu items...</p>
+      </div>
+    </div>
+
+    <div id="tab-waitlist" class="tab-panel" style="display:none">
+      <div class="admin-toolbar">
+        <h1 class="admin-title">Waitlist</h1>
+        <div class="waitlist-toolbar-actions">
+          <span id="waitlist-count" class="waitlist-count"></span>
+          <button id="waitlist-export-btn" class="admin-btn">Export CSV</button>
+        </div>
+      </div>
+      <div class="waitlist-filters">
+        <button class="waitlist-filter-btn active" data-filter="all">All</button>
+        <button class="waitlist-filter-btn" data-filter="bud">Bud</button>
+        <button class="waitlist-filter-btn" data-filter="watches">Watches</button>
+      </div>
+      <div id="waitlist-list" class="waitlist-list">
+        <p class="loading-text">Loading waitlist...</p>
+      </div>
+
+      <div class="waitlist-plain-block">
+        <div class="waitlist-plain-header">
+          <span class="waitlist-plain-label">Plaintext — all visible emails</span>
+          <button id="waitlist-copy-btn" class="admin-btn admin-btn-primary">Copy All</button>
+        </div>
+        <textarea id="waitlist-plain" class="waitlist-plain-text" readonly></textarea>
       </div>
     </div>
 
@@ -187,6 +217,7 @@
 
   <div id="toast" class="toast"></div>
 
+  <script src="js/petals.js"></script>
   <script src="js/admin.js"></script>
 </body>
 </html>

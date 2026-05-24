@@ -281,3 +281,20 @@ body {
   image-rendering: auto;
   transition: opacity 0.3s ease;
 }
+
+.coming-soon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4rem 2rem;
+}
+
+.coming-soon-text {
+  font-family: var(--font-sans);
+  font-size: 0.55rem;
+  font-weight: 200;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--gold);
+  opacity: 0.5;
+}

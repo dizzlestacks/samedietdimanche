@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Samedi Et Dimanche — WHERE THE WEEK ENDS. Luxury clothing and lifestyle brand.">
-  <meta name="author" content="Damion Wright">
-  <meta name="keywords" content="samedi, dimanche, samedietdimanche, luxury, clothing, bud">
+  <meta name="description" content="Samedi Et Dimanche — WHERE THE WEEK ENDS.">
   <title>SAMEDI ET DIMANCHE</title>
 
-  <link rel="shortcut icon" href="img/newlogo.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="180x180" href="img/favicon.png">
+  <link rel="apple-touch-icon" href="img/favicon.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/waitlist.css">
 </head>
 <body>
 
@@ -22,40 +22,37 @@
   <div class="noise"></div>
   <div id="petals"></div>
 
-  <main class="main-content">
+  <main class="landing-page">
 
-    <div class="logo-wrap animate-in" style="--delay: 0s">
+    <div class="landing-logo animate-in" style="--delay:0s">
       <img src="img/newlogo.png" alt="Samedi Et Dimanche" class="logo">
-      <span class="page-indicator">Where The Week Ends</span>
+      <div class="wl-rule"></div>
+      <span class="wl-tagline">Where The Week Ends</span>
     </div>
 
-    <nav class="nav-links animate-in" style="--delay: 0.4s">
-
-      <a href="bud.html" class="nav-item">
-        <span class="nav-label">Bud</span>
-        <span class="nav-sub">Weed</span>
-        <div class="nav-line"></div>
+    <nav class="landing-nav animate-in" style="--delay:0.35s">
+      <a href="bud.html" class="landing-nav-item">
+        <span class="landing-nav-label">Bud</span>
+        <span class="landing-nav-sub">The Collection</span>
+        <span class="landing-nav-line"></span>
       </a>
 
-      <div class="nav-divider"></div>
+      <div class="landing-nav-divider"></div>
 
-      <a href="shop.html" class="nav-item">
-        <span class="nav-label">Shop</span>
-        <span class="nav-sub">Collection</span>
-        <div class="nav-line"></div>
+      <a href="watches.html" class="landing-nav-item">
+        <span class="landing-nav-label">Watches</span>
+        <span class="landing-nav-sub">Automatic · Limited</span>
+        <span class="landing-nav-line"></span>
       </a>
-
     </nav>
 
   </main>
 
-  <footer class="site-footer animate-in" style="--delay: 0.7s">
+  <footer class="wl-footer animate-in" style="--delay:0.85s">
     <p class="copyright">&copy; <span id="year"></span> &nbsp;Samedi Et Dimanche</p>
   </footer>
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
-  <script src="js/petals.js"></script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="js/rose-petals.js"></script>
 </body>
 </html>

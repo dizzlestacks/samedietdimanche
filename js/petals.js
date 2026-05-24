@@ -148,6 +148,8 @@
   function fadeIn() {
     var overlay = document.getElementById('page-transition');
     if (!overlay) return;
+    overlay.style.transition = 'none';
+    overlay.style.display = 'block';
     overlay.style.opacity = '1';
     requestAnimationFrame(function () {
       requestAnimationFrame(function () {
@@ -180,6 +182,12 @@
   }
 
   preloadImages();
+
+  window.addEventListener('pageshow', function (e) {
+    if (e.persisted) {
+      fadeIn();
+    }
+  });
 
   document.addEventListener('DOMContentLoaded', function () {
     fadeIn();

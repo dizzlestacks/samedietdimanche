@@ -7,6 +7,8 @@ import { runMigrations } from 'stripe-replit-sync';
 import { getStripeSync, getUncachableStripeClient, getStripePublishableKey } from './stripeClient.js';
 import { WebhookHandlers } from './webhookHandlers.js';
 import { initBudMenuTable, getAllBudMenuItems, getActiveBudMenuItems, createBudMenuItem, updateBudMenuItem, deleteBudMenuItem, seedBudMenuItems } from './budMenuDb.js';
+import { initWaitlistTable, addToWaitlist, getWaitlist } from './waitlistDb.js';
+import { timingSafeEqual } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -43,6 +45,39 @@ const upload = multer({
 const app = express();
 const PORT = 5000;
 
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+const ADMIN_USER = 'admin';
+
+function timingSafeEqualStr(a, b) {
+  const A = Buffer.from(String(a));
+  const B = Buffer.from(String(b));
+  if (A.length !== B.length) return false;
+  return timingSafeEqual(A, B);
+}
+
+function adminAuth(req, res, next) {
+  if (!ADMIN_PASSWORD) {
+    return res.status(503).send('Admin password not configured on server.');
+  }
+  const header = req.headers.authorization || '';
+  if (header.startsWith('Basic ')) {
+    try {
+      const decoded = Buffer.from(header.slice(6), 'base64').toString('utf8');
+      const idx = decoded.indexOf(':');
+      const user = decoded.slice(0, idx);
+      const pass = decoded.slice(idx + 1);
+      if (user === ADMIN_USER && timingSafeEqualStr(pass, ADMIN_PASSWORD)) {
+        return next();
+      }
+    } catch (e) {}
+  }
+  res.set('WWW-Authenticate', 'Basic realm="Samedi Et Dimanche Admin", charset="UTF-8"');
+  return res.status(401).send('Authentication required');
+}
+
+app.use(['/admin', '/admin.html', '/api/admin'], adminAuth);
+app.use('/api/admin/', adminAuth);
+
 app.post(
   '/api/stripe/webhook',
   express.raw({ type: 'application/json' }),
@@ -67,7 +102,70 @@ app.post(
   }
 );
 
+app.set('trust proxy', true);
 app.use(express.json());
+
+const geoCache = new Map();
+const GEO_CACHE_TTL = 600000;
+
+async function getCountry(ip) {
+  if (!ip || ip === '127.0.0.1' || ip === '::1' || ip === '::ffff:127.0.0.1') return 'LOCAL';
+
+  const cached = geoCache.get(ip);
+  if (cached && Date.now() - cached.ts < GEO_CACHE_TTL) return cached.country;
+
+  try {
+    const res = await fetch(`http://ip-api.com/json/${ip}?fields=countryCode`);
+    const data = await res.json();
+    const country = data.countryCode || 'UNKNOWN';
+    geoCache.set(ip, { country, ts: Date.now() });
+    return country;
+  } catch (err) {
+    console.error('Geo lookup failed:', err.message);
+    return 'UNKNOWN';
+  }
+}
+
+const GEO_BLOCKED_HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAMEDI ET DIMANCHE</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/index.css">
+  <style>
+    .geo-block { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; text-align:center; padding:2rem; }
+    .geo-block .logo { width:100px; margin-bottom:2rem; }
+    .geo-msg { font-family:'Montserrat',sans-serif; font-size:0.55rem; font-weight:200; letter-spacing:0.3em; text-transform:uppercase; color:#C9A96E; opacity:0.7; line-height:2; max-width:400px; }
+    .geo-back { display:inline-block; margin-top:2.5rem; font-family:'Montserrat',sans-serif; font-size:0.45rem; font-weight:300; letter-spacing:0.25em; text-transform:uppercase; color:#f0ece4; opacity:0.4; text-decoration:none; border:1px solid rgba(240,236,228,0.15); padding:0.6rem 1.5rem; transition:all 0.3s ease; }
+    .geo-back:hover { opacity:0.8; border-color:rgba(201,169,110,0.4); color:#C9A96E; }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="geo-block">
+    <img src="/img/newlogo.png" alt="Samedi Et Dimanche" class="logo">
+    <p class="geo-msg">Sorry, this content is not available in your country.</p>
+    <a href="/index.html" class="geo-back">Return Home</a>
+  </div>
+</body>
+</html>`;
+
+async function budGeoBlock(req, res, next) {
+  const ip = req.ip || req.connection?.remoteAddress;
+  const country = await getCountry(ip);
+  if (country === 'CA' || country === 'LOCAL') {
+    return next();
+  }
+  res.status(403).send(GEO_BLOCKED_HTML);
+}
+
+app.get('/budmenu.html', budGeoBlock);
+app.get('/budmenu', budGeoBlock);
 
 app.get('/api/config', async (req, res) => {
   try {
@@ -307,7 +405,32 @@ app.delete('/api/admin/products/:id', async (req, res) => {
   }
 });
 
-app.get('/api/bud-menu', async (req, res) => {
+app.post('/api/waitlist', async (req, res) => {
+  try {
+    const { email, category } = req.body;
+    if (!email || typeof email !== 'string' || !email.includes('@')) {
+      return res.status(400).json({ error: 'Valid email is required' });
+    }
+    const cat = (category === 'bud' || category === 'watches') ? category : 'watches';
+    const result = await addToWaitlist(email, cat);
+    res.json(result);
+  } catch (error) {
+    console.error('Error adding to waitlist:', error);
+    res.status(500).json({ error: 'Failed to join waitlist' });
+  }
+});
+
+app.get('/api/admin/waitlist', async (req, res) => {
+  try {
+    const emails = await getWaitlist();
+    res.json({ data: emails });
+  } catch (error) {
+    console.error('Error fetching waitlist:', error);
+    res.status(500).json({ error: 'Failed to fetch waitlist' });
+  }
+});
+
+app.get('/api/bud-menu', budGeoBlock, async (req, res) => {
   try {
     const items = await getActiveBudMenuItems();
     res.json({ data: items });
@@ -382,6 +505,10 @@ app.listen(PORT, '0.0.0.0', () => {
 
   initBudMenu().catch(err => {
     console.error('Bud menu init error:', err.message);
+  });
+
+  initWaitlistTable().catch(err => {
+    console.error('Waitlist table init error:', err.message);
   });
 
   initStripe().catch(err => {
