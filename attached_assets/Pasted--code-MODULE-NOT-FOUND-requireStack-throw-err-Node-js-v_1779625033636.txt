@@ -1,0 +1,102 @@
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+  throw err;
+Node.js v22.22.3
+Error: Cannot find module '/app/dist/index.cjs'
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+    at Function._load (node:internal/modules/cjs/loader:1216:25)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+npm warn config production Use `--omit=dev` instead.
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.cjs
+}
+Node.js v22.22.3
+  throw err;
+  ^
+Error: Cannot find module '/app/dist/index.cjs'
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+  requireStack: []
+npm warn config production Use `--omit=dev` instead.
+> NODE_ENV=production node dist/index.cjs
+node:internal/modules/cjs/loader:1433
+  throw err;
+Error: Cannot find module '/app/dist/index.cjs'
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)
+    at Function._load (node:internal/modules/cjs/loader:1216:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  requireStack: []
+}
+Node.js v22.22.3
+Starting Container
+npm warn config production Use `--omit=dev` instead.
+> NODE_ENV=production node dist/index.cjs
+node:internal/modules/cjs/loader:1433
+  throw err;
+  ^
+Error: Cannot find module '/app/dist/index.cjs'
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  code: 'MODULE_NOT_FOUND',
+}
+npm warn config production Use `--omit=dev` instead.
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.cjs
+node:internal/modules/cjs/loader:1433
+  throw err;
+  ^
+Error: Cannot find module '/app/dist/index.cjs'
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+}
+> rest-express@1.0.0 start
+> NODE_ENV=production node dist/index.cjs
+node:internal/modules/cjs/loader:1433
+  ^
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)
+    at Function._load (node:internal/modules/cjs/loader:1216:25)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+  requireStack: []
+}
+Node.js v22.22.3
+> rest-express@1.0.0 start
+node:internal/modules/cjs/loader:1433
+  throw err;
+  ^
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+    at Function._load (node:internal/modules/cjs/loader:1216:25)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+    at node:internal/main/run_main_module:36:49 {
+  requireStack: []
+Node.js v22.22.3
+npm warn config production Use `--omit=dev` instead.
+    at wrapModuleLoad (node:internal/modules/cjs/loader:254:19)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:171:5)
+node:internal/modules/cjs/loader:1433
+  throw err;
+  code: 'MODULE_NOT_FOUND',
+  requireStack: []
+Error: Cannot find module '/app/dist/index.cjs'
+    at Function._resolveFilename (node:internal/modules/cjs/loader:1430:15)
+}
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1040:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1045:22)
+Node.js v22.22.3
+You reached the end of the range
+May 24, 2026, 8:16 AM
