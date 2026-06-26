@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Samedi Et Dimanche — BUD. WHERE THE WEEK ENDS. Join the waitlist.">
+  <title>BUD — SAMEDI ET DIMANCHE</title>
+
+  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
+  <link rel="icon" type="image/png" sizes="180x180" href="img/favicon.png">
+  <link rel="apple-touch-icon" href="img/favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/waitlist.css">
+</head>
+<body class="wl-bud">
+
+  <div id="page-transition"></div>
+  <div class="noise"></div>
+  <div id="petals"></div>
+
+  <main class="waitlist-page">
+
+    <a href="index.html" class="wl-logo animate-in" style="--delay:0s; text-decoration:none;">
+      <img src="img/newlogo.png" alt="Samedi Et Dimanche" class="logo">
+      <div class="wl-rule"></div>
+      <span class="wl-tagline">The Bud Collection</span>
+    </a>
+
+    <div class="wl-cta-text animate-in" style="--delay:0.3s">
+      <p class="wl-cta-headline">Be First to Know</p>
+      <p class="wl-cta-sub">Exclusive early access for waitlist members</p>
+    </div>
+
+    <form class="wl-form animate-in" style="--delay:0.45s" id="waitlist-form" data-category="bud">
+      <div class="wl-input-wrap">
+        <input type="email" id="wl-email" class="wl-input" placeholder="your@email.com" autocomplete="email" required>
+        <button type="submit" class="wl-btn">Join the List</button>
+      </div>
+      <p class="wl-msg" id="wl-msg"></p>
+    </form>
+
+    <div class="wl-follow-reveal" id="wl-follow-reveal">
+      <a href="https://www.instagram.com/samedietdimanche.official" target="_blank" class="wl-instagram">
+        Follow on Instagram
+      </a>
+    </div>
+
+  </main>
+
+  <footer class="wl-footer animate-in" style="--delay:0.95s">
+    <p class="copyright">&copy; <span id="year"></span> &nbsp;Samedi Et Dimanche</p>
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+  <script src="js/rose-petals.js"></script>
+  <script src="js/waitlist.js"></script>
+</body>
+</html>
