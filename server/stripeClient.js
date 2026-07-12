@@ -2,6 +2,15 @@ import Stripe from 'stripe';
 
 let connectionSettings;
 
+export function isStripeConfigured() {
+  if (process.env.STRIPE_SECRET_KEY) return true;
+  const hasConnector = Boolean(
+    process.env.REPLIT_CONNECTORS_HOSTNAME &&
+    (process.env.REPL_IDENTITY || process.env.WEB_REPL_RENEWAL)
+  );
+  return hasConnector;
+}
+
 async function getCredentials() {
   if (process.env.STRIPE_SECRET_KEY) {
     return {

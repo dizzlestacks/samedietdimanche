@@ -130,6 +130,10 @@ function renderProducts() {
     (p.name || '').toLowerCase().includes(q) ||
     (p.description || '').toLowerCase().includes(q));
   productList.innerHTML = '';
+  if (!stripeEnabled) {
+    productList.innerHTML = '<p class="loading-text">Shop is in "coming soon" mode — Stripe is not connected. Add STRIPE_SECRET_KEY and STRIPE_PUBLISHABLE_KEY to enable products and checkout.</p>';
+    return;
+  }
   if (items.length === 0) {
     productList.innerHTML = '<p class="loading-text">' +
       (q ? 'No products match your search.' : 'No products yet. Click "+ Add Product" to create one.') +
@@ -190,7 +194,13 @@ function closeModal() {
 document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('cancel-btn').addEventListener('click', closeModal);
 editModal.addEventListener('click', (e) => { if (e.target === editModal) closeModal(); });
-document.getElementById('add-btn').addEventListener('click', () => openEdit(null));
+document.getElementById('add-btn').addEventListener('click', () => {
+  if (!stripeEnabled) {
+    showToast('Shop is in "coming soon" mode — Stripe is not connected.', true);
+    return;
+  }
+  openEdit(null);
+});
 
 productForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -248,11 +258,14 @@ async function toggleProduct(id, active) {
   }
 }
 
+let stripeEnabled = true;
+
 async function loadProducts() {
   try {
     const res = await fetch('/api/admin/products');
     const data = await res.json();
     products = data.data || [];
+    stripeEnabled = data.stripeEnabled !== false;
     renderProducts();
     renderDashboard();
   } catch (err) {

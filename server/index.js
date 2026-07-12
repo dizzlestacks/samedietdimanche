@@ -4,7 +4,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
 import { runMigrations } from 'stripe-replit-sync';
-import { getStripeSync, getUncachableStripeClient, getStripePublishableKey } from './stripeClient.js';
+import { getStripeSync, getUncachableStripeClient, getStripePublishableKey, isStripeConfigured } from './stripeClient.js';
 import { WebhookHandlers } from './webhookHandlers.js';
 import { initBudMenuTable, getAllBudMenuItems, getActiveBudMenuItems, createBudMenuItem, updateBudMenuItem, deleteBudMenuItem, seedBudMenuItems } from './budMenuDb.js';
 import { initWaitlistTable, addToWaitlist, getWaitlist } from './waitlistDb.js';
@@ -96,6 +96,9 @@ app.post(
   '/api/stripe/webhook',
   express.raw({ type: 'application/json' }),
   async (req, res) => {
+    if (!isStripeConfigured()) {
+      return res.status(503).json({ error: 'Stripe is not configured' });
+    }
     const signature = req.headers['stripe-signature'];
     if (!signature) {
       return res.status(400).json({ error: 'Missing stripe-signature' });
@@ -182,9 +185,12 @@ app.get('/budmenu.html', budGeoBlock);
 app.get('/budmenu', budGeoBlock);
 
 app.get('/api/config', async (req, res) => {
+  if (!isStripeConfigured()) {
+    return res.json({ publishableKey: null, stripeEnabled: false });
+  }
   try {
     const publishableKey = await getStripePublishableKey();
-    res.json({ publishableKey });
+    res.json({ publishableKey, stripeEnabled: true });
   } catch (error) {
     console.error('Error getting config:', error);
     res.status(500).json({ error: 'Failed to get config' });
@@ -192,6 +198,9 @@ app.get('/api/config', async (req, res) => {
 });
 
 app.get('/api/products', async (req, res) => {
+  if (!isStripeConfigured()) {
+    return res.json({ data: [], stripeEnabled: false });
+  }
   try {
     const stripe = await getUncachableStripeClient();
     const products = await stripe.products.list({ active: true, limit: 20 });
@@ -221,6 +230,9 @@ app.get('/api/products', async (req, res) => {
 });
 
 app.post('/api/checkout', async (req, res) => {
+  if (!isStripeConfigured()) {
+    return res.status(503).json({ error: 'The shop is coming soon — checkout is not available yet.' });
+  }
   try {
     const { priceId, quantity = 1 } = req.body;
 
@@ -265,6 +277,9 @@ app.post('/api/checkout', async (req, res) => {
 });
 
 app.get('/api/admin/products', async (req, res) => {
+  if (!isStripeConfigured()) {
+    return res.json({ data: [], stripeEnabled: false });
+  }
   try {
     const stripe = await getUncachableStripeClient();
     const products = await stripe.products.list({ limit: 100 });
@@ -304,6 +319,9 @@ app.post('/api/admin/upload', upload.single('image'), (req, res) => {
 });
 
 app.post('/api/admin/products', async (req, res) => {
+  if (!isStripeConfigured()) {
+    return res.status(503).json({ error: 'Stripe is not connected — shop products are disabled for now.' });
+  }
   try {
     const { name, description, price, badge, image } = req.body;
 
@@ -354,6 +372,9 @@ app.post('/api/admin/products', async (req, res) => {
 });
 
 app.put('/api/admin/products/:id', async (req, res) => {
+  if (!isStripeConfigured()) {
+    return res.status(503).json({ error: 'Stripe is not connected — shop products are disabled for now.' });
+  }
   try {
     const { id } = req.params;
     const { name, description, active, badge, price, image } = req.body;
@@ -405,6 +426,9 @@ app.put('/api/admin/products/:id', async (req, res) => {
 });
 
 app.delete('/api/admin/products/:id', async (req, res) => {
+  if (!isStripeConfigured()) {
+    return res.status(503).json({ error: 'Stripe is not connected — shop products are disabled for now.' });
+  }
   try {
     const { id } = req.params;
     const stripe = await getUncachableStripeClient();
@@ -549,6 +573,10 @@ async function initBudMenu() {
 }
 
 async function initStripe() {
+  if (!isStripeConfigured()) {
+    console.log('Stripe not configured — shop runs in "coming soon" mode. Set STRIPE_SECRET_KEY and STRIPE_PUBLISHABLE_KEY to enable it.');
+    return;
+  }
   const databaseUrl = process.env.DATABASE_URL;
   if (!databaseUrl) {
     console.error('DATABASE_URL not set — skipping Stripe schema init');

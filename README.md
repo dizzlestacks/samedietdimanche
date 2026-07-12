@@ -46,7 +46,9 @@ LIVE/
 
 - **Node.js 20+**
 - **PostgreSQL** (any provider: Neon, Supabase, Railway, RDS, self-hosted)
-- A **Stripe account** with API keys
+- (Optional) A **Stripe account** with API keys — only for the clothing shop +
+  checkout. Without Stripe the site runs normally and the shop shows
+  "Collection coming soon".
 
 ---
 
@@ -58,8 +60,8 @@ Copy `.env.example` to `.env` and fill in real values. The variables are:
 |--------------------------|----------|------------|
 | `DATABASE_URL`           | ✅       | Postgres connection string |
 | `ADMIN_PASSWORD`         | ✅       | Password for `/admin` (username is `admin`) |
-| `STRIPE_SECRET_KEY`      | ✅       | `sk_live_...` or `sk_test_...` |
-| `STRIPE_PUBLISHABLE_KEY` | ✅       | `pk_live_...` or `pk_test_...` |
+| `STRIPE_SECRET_KEY`      | optional | `sk_live_...` or `sk_test_...` — enables the shop |
+| `STRIPE_PUBLISHABLE_KEY` | optional | `pk_live_...` or `pk_test_...` — enables the shop |
 | `STRIPE_WEBHOOK_SECRET`  | optional | `whsec_...` for webhook signature verification |
 | `PORT`                   | optional | Defaults to `5000` |
 

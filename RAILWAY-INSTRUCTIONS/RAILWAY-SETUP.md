@@ -16,8 +16,10 @@ You need:
 
 - A **Railway account** → https://railway.com
 - A **GitHub account** (Railway deploys from a GitHub repo)
-- Your **Stripe API keys** (from https://dashboard.stripe.com/apikeys)
 - A strong **admin password** you choose yourself
+- (Optional) Your **Stripe API keys** (from https://dashboard.stripe.com/apikeys)
+  — only needed if you want the clothing shop and checkout live. Without them,
+  the site runs fine and the shop simply shows "Collection coming soon".
 
 ---
 
@@ -56,9 +58,9 @@ You need:
 3. On first boot the app creates its own tables — no manual SQL needed.
 
 > **How to tell it worked:** in the deploy logs you should see
-> `Bud menu table ready` and `Stripe schema ready`, NOT
-> `DATABASE_URL not set` or `ECONNREFUSED ... 5432`. Seeing `ECONNREFUSED`
-> on port 5432 means the database is still not connected — redo this step.
+> `Bud menu table ready`, NOT `DATABASE_URL not set` or
+> `ECONNREFUSED ... 5432`. Seeing `ECONNREFUSED` on port 5432 means the
+> database is still not connected — redo this step.
 
 ---
 
@@ -69,9 +71,13 @@ In your service, open the **Variables** tab and add:
 | Variable                 | Required | Value |
 |--------------------------|----------|-------|
 | `ADMIN_PASSWORD`         | yes      | A strong password for the `/admin` page |
-| `STRIPE_SECRET_KEY`      | yes      | `sk_live_...` (or `sk_test_...` for testing) |
-| `STRIPE_PUBLISHABLE_KEY` | yes      | `pk_live_...` (or `pk_test_...`) |
+| `STRIPE_SECRET_KEY`      | optional | `sk_live_...` (or `sk_test_...`) — only if you want the shop live |
+| `STRIPE_PUBLISHABLE_KEY` | optional | `pk_live_...` (or `pk_test_...`) — only if you want the shop live |
 | `STRIPE_WEBHOOK_SECRET`  | optional | `whsec_...` (see Step 6) |
+
+> **No Stripe yet? No problem.** Skip the Stripe variables entirely. The site
+> works normally — the clothing page just shows "Collection coming soon" and
+> checkout stays off. Add the keys later whenever you're ready to sell.
 
 You set `DATABASE_URL` in Step 3 (as a reference to your Postgres service). You do
 **not** need to set `PORT` (Railway provides it) or `PUBLIC_URL` (auto-detected
