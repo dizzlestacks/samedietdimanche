@@ -8,6 +8,7 @@ import { getStripeSync, getUncachableStripeClient, getStripePublishableKey, isSt
 import { WebhookHandlers } from './webhookHandlers.js';
 import { initBudMenuTable, getAllBudMenuItems, getActiveBudMenuItems, createBudMenuItem, updateBudMenuItem, deleteBudMenuItem, seedBudMenuItems } from './budMenuDb.js';
 import { initWaitlistTable, addToWaitlist, getWaitlist, waitlistStorageMode } from './waitlistDb.js';
+import { initSettingsTable, getSettings, updateSettings } from './settingsDb.js';
 import { timingSafeEqual } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -466,6 +467,26 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+app.get('/api/site-settings', async (req, res) => {
+  try {
+    const settings = await getSettings();
+    res.json(settings);
+  } catch (error) {
+    console.error('Error fetching settings:', error);
+    res.status(500).json({ error: 'Failed to fetch settings' });
+  }
+});
+
+app.put('/api/admin/site-settings', async (req, res) => {
+  try {
+    const settings = await updateSettings(req.body || {});
+    res.json(settings);
+  } catch (error) {
+    console.error('Error updating settings:', error);
+    res.status(400).json({ error: error.message || 'Failed to update settings' });
+  }
+});
+
 app.get('/api/admin/waitlist', async (req, res) => {
   try {
     const emails = await getWaitlist();
@@ -553,6 +574,9 @@ app.listen(PORT, '0.0.0.0', () => {
     console.error('Bud menu init error:', err.message);
   });
 
+  initSettingsTable().catch(err => {
+    console.error('Settings table init error:', err.message);
+  });
   initWaitlistTable().catch(err => {
     console.error('Waitlist table init error:', err.message);
   });

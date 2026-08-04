@@ -35,6 +35,7 @@
       <button class="tab-btn" data-tab="shop">Shop Products</button>
       <button class="tab-btn" data-tab="bud">Bud Menu</button>
       <button class="tab-btn" data-tab="waitlist">Waitlist</button>
+      <button class="tab-btn" data-tab="watchpage">Watch Page</button>
     </div>
 
     <div id="tab-overview" class="tab-panel active">
@@ -127,6 +128,54 @@
           <button id="waitlist-copy-btn" class="admin-btn admin-btn-primary">Copy All</button>
         </div>
         <textarea id="waitlist-plain" class="waitlist-plain-text" readonly></textarea>
+      </div>
+    </div>
+
+    <div id="tab-watchpage" class="tab-panel" style="display:none">
+      <div class="admin-toolbar">
+        <h1 class="admin-title">Watch Page</h1>
+        <div class="toolbar-actions">
+          <button id="wp-save-btn" class="admin-btn admin-btn-primary">Save Changes</button>
+        </div>
+      </div>
+
+      <div class="dashboard-section">
+        <div class="dashboard-section-header">
+          <span class="dashboard-section-label">Page Mode</span>
+        </div>
+        <div class="wp-mode-row">
+          <label class="wp-mode-option">
+            <input type="radio" name="wp-mode" value="waitlist">
+            <span>Waitlist — visitors join the email list</span>
+          </label>
+          <label class="wp-mode-option">
+            <input type="radio" name="wp-mode" value="shop">
+            <span>Shop — visitors see products and can buy</span>
+          </label>
+        </div>
+        <p class="loading-text" id="wp-mode-note" style="display:none"></p>
+      </div>
+
+      <div class="dashboard-section">
+        <div class="dashboard-section-header">
+          <span class="dashboard-section-label">Headline &amp; Subtitle</span>
+        </div>
+        <div class="form-group">
+          <label for="wp-headline">Headline</label>
+          <input type="text" id="wp-headline" maxlength="200">
+        </div>
+        <div class="form-group">
+          <label for="wp-sub">Subtitle</label>
+          <input type="text" id="wp-sub" maxlength="300">
+        </div>
+      </div>
+
+      <div class="dashboard-section">
+        <div class="dashboard-section-header">
+          <span class="dashboard-section-label">The Details (specs)</span>
+          <button id="wp-add-spec-btn" class="admin-btn">+ Add Row</button>
+        </div>
+        <div id="wp-specs-list"></div>
       </div>
     </div>
 

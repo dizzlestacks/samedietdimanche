@@ -31,9 +31,11 @@
     </a>
 
     <div class="wl-cta-text animate-in" style="--delay:0.25s">
-      <p class="wl-cta-headline">Be First to Know</p>
-      <p class="wl-cta-sub">Exclusive early access for waitlist members</p>
+      <p class="wl-cta-headline" id="wl-headline">Be First to Know</p>
+      <p class="wl-cta-sub" id="wl-sub">Exclusive early access for waitlist members</p>
     </div>
+
+    <div id="watch-shop" class="watch-shop animate-in" style="--delay:0.4s; display:none"></div>
 
     <form class="wl-form animate-in" style="--delay:0.4s" id="waitlist-form" data-category="watches">
       <div class="wl-input-wrap">
@@ -55,7 +57,7 @@
         <span class="wl-details-chevron" aria-hidden="true">+</span>
       </summary>
       <div class="wl-details-body">
-        <div class="wl-specs">
+        <div class="wl-specs" id="wl-specs">
           <div class="wl-spec-row">
             <span class="wl-spec-label">Movement</span>
             <span class="wl-spec-dot"></span>
@@ -94,5 +96,6 @@
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
   <script src="js/rose-petals.js"></script>
   <script src="js/waitlist.js"></script>
+  <script src="js/watch-page.js"></script>
 </body>
 </html>

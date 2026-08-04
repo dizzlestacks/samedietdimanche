@@ -79,6 +79,13 @@ In your service, open the **Variables** tab and add:
 > works normally — the clothing page just shows "Collection coming soon" and
 > checkout stays off. Add the keys later whenever you're ready to sell.
 
+> **No database yet? Emails can still survive redeploys.** Add a **Volume** to
+> your website service (right-click the service → **Attach Volume**, mount path
+> `/data`), then add a variable `DATA_DIR` = `/data`. Signups and settings are
+> then written to that persistent disk instead of the app folder, so uploads
+> and redeploys never wipe them. (The database is still the best long-term home
+> — everything auto-imports into it once `DATABASE_URL` works.)
+
 You set `DATABASE_URL` in Step 3 (as a reference to your Postgres service). You do
 **not** need to set `PORT` (Railway provides it) or `PUBLIC_URL` (auto-detected
 from your Railway domain).

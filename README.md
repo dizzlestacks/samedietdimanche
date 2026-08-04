@@ -64,6 +64,7 @@ Copy `.env.example` to `.env` and fill in real values. The variables are:
 | `STRIPE_PUBLISHABLE_KEY` | optional | `pk_live_...` or `pk_test_...` — enables the shop |
 | `STRIPE_WEBHOOK_SECRET`  | optional | `whsec_...` for webhook signature verification |
 | `PORT`                   | optional | Defaults to `5000` |
+| `DATA_DIR`               | optional | Folder for file-backed waitlist/settings storage (point it at a persistent disk/volume, e.g. `/data`, to survive redeploys without a database) |
 
 Most hosts (Render / Railway / Fly / Vercel-server / etc.) let you paste
 these into a dashboard instead of using a `.env` file.

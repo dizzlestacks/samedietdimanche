@@ -43,6 +43,7 @@ function activateTab(name) {
     p.style.display = on ? 'block' : 'none';
   });
   if (name === 'waitlist' && !waitlistLoaded) loadWaitlist();
+  if (name === 'watchpage' && !watchPageLoaded) loadWatchPageSettings();
 }
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -604,6 +605,97 @@ if (waitlistExportBtn) {
     URL.revokeObjectURL(url);
   });
 }
+
+// ─── Watch Page settings ─────────────────────────────────
+let watchPageLoaded = false;
+
+function wpSpecRow(label, value) {
+  const row = document.createElement('div');
+  row.className = 'wp-spec-row';
+  row.innerHTML =
+    '<input type="text" class="wp-spec-label" placeholder="Label (e.g. Movement)" maxlength="100">' +
+    '<input type="text" class="wp-spec-value" placeholder="Value" maxlength="300">' +
+    '<button type="button" class="action-btn wp-spec-remove">Remove</button>';
+  row.querySelector('.wp-spec-label').value = label || '';
+  row.querySelector('.wp-spec-value').value = value || '';
+  row.querySelector('.wp-spec-remove').addEventListener('click', () => row.remove());
+  return row;
+}
+
+async function loadWatchPageSettings() {
+  try {
+    const res = await fetch('/api/site-settings');
+    if (!res.ok) throw new Error('Failed');
+    const s = await res.json();
+    watchPageLoaded = true;
+
+    const modeInput = document.querySelector('input[name="wp-mode"][value="' + (s.watchesMode === 'shop' ? 'shop' : 'waitlist') + '"]');
+    if (modeInput) modeInput.checked = true;
+    document.getElementById('wp-headline').value = s.watchHeadline || '';
+    document.getElementById('wp-sub').value = s.watchSub || '';
+
+    const list = document.getElementById('wp-specs-list');
+    list.innerHTML = '';
+    (s.watchSpecs || []).forEach(spec => list.appendChild(wpSpecRow(spec.label, spec.value)));
+
+    // Warn if shop mode is selected but the shop can't actually sell yet.
+    updateWpModeNote();
+  } catch (err) {
+    showToast('Could not load watch page settings', true);
+  }
+}
+
+async function updateWpModeNote() {
+  const note = document.getElementById('wp-mode-note');
+  if (!note) return;
+  try {
+    const health = await (await fetch('/api/health')).json();
+    if (!health.stripeEnabled) {
+      note.textContent = 'Note: Stripe is not set up yet, so even in Shop mode visitors will still see the waitlist until Stripe keys are added and products exist.';
+      note.style.display = 'block';
+    } else {
+      note.style.display = 'none';
+    }
+  } catch (e) {}
+}
+
+document.getElementById('wp-add-spec-btn').addEventListener('click', () => {
+  document.getElementById('wp-specs-list').appendChild(wpSpecRow('', ''));
+});
+
+document.getElementById('wp-save-btn').addEventListener('click', async () => {
+  const btn = document.getElementById('wp-save-btn');
+  btn.disabled = true;
+  btn.textContent = 'Saving...';
+  try {
+    const modeEl = document.querySelector('input[name="wp-mode"]:checked');
+    const specs = [...document.querySelectorAll('#wp-specs-list .wp-spec-row')].map(row => ({
+      label: row.querySelector('.wp-spec-label').value.trim(),
+      value: row.querySelector('.wp-spec-value').value.trim(),
+    })).filter(s => s.label || s.value);
+
+    const res = await fetch('/api/admin/site-settings', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        watchesMode: modeEl ? modeEl.value : 'waitlist',
+        watchHeadline: document.getElementById('wp-headline').value.trim(),
+        watchSub: document.getElementById('wp-sub').value.trim(),
+        watchSpecs: specs,
+      }),
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      throw new Error(data.error || 'Save failed');
+    }
+    showToast('Watch page updated');
+  } catch (err) {
+    showToast(err.message || 'Save failed', true);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Save Changes';
+  }
+});
 
 // ─── Init ────────────────────────────────────────────────
 loadProducts();

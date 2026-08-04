@@ -4,7 +4,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const DATA_DIR = path.join(__dirname, '..', 'data');
+// DATA_DIR can point at a persistent disk (e.g. a Railway Volume mounted at
+// /data) so file-backed signups survive redeploys even without a database.
+const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..', 'data');
 const FILE_PATH = path.join(DATA_DIR, 'waitlist.json');
 
 // Railway/other hosts expose the connection string under different names,

@@ -809,3 +809,28 @@
   overflow: auto;
 }
 .waitlist-plain-text:focus { border-color: rgba(196,149,106,0.5); }
+
+/* --- Watch Page settings tab --- */
+.wp-mode-row { display: flex; flex-direction: column; gap: 0.6rem; padding: 0.5rem 0; }
+.wp-mode-option { display: flex; align-items: center; gap: 0.6rem; cursor: pointer; font-size: 0.9rem; }
+.wp-mode-option input { accent-color: #d4af37; }
+.wp-spec-row { display: flex; gap: 0.6rem; margin-bottom: 0.6rem; align-items: center; }
+.wp-spec-row input {
+  flex: 1;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: inherit;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.85rem;
+}
+.wp-spec-row .wp-spec-label { flex: 0 0 32%; }
+#tab-watchpage .form-group { margin-bottom: 0.9rem; }
+#tab-watchpage .form-group input {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: inherit;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.9rem;
+}
+#tab-watchpage .form-group label { display: block; margin-bottom: 0.3rem; font-size: 0.78rem; opacity: 0.75; letter-spacing: 0.08em; text-transform: uppercase; }
