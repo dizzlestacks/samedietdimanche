@@ -562,6 +562,16 @@ async function loadWaitlist() {
     const payload = await res.json();
     waitlistEntries = Array.isArray(payload) ? payload : (payload.data || []);
     waitlistLoaded = true;
+    if (payload && payload.storage === 'file') {
+      const note = document.getElementById('waitlist-storage-note') || (() => {
+        const p = document.createElement('p');
+        p.id = 'waitlist-storage-note';
+        p.className = 'loading-text';
+        waitlistList.parentNode.insertBefore(p, waitlistList);
+        return p;
+      })();
+      note.textContent = 'Note: no database is connected, so signups are saved to a file on the server. They work, but connect the database to keep them safe long-term (a redeploy can clear the file). Export/copy them regularly.';
+    }
     renderWaitlist();
     renderDashboard();
   } catch (err) {

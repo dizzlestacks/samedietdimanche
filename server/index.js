@@ -7,7 +7,7 @@ import { runMigrations } from 'stripe-replit-sync';
 import { getStripeSync, getUncachableStripeClient, getStripePublishableKey, isStripeConfigured } from './stripeClient.js';
 import { WebhookHandlers } from './webhookHandlers.js';
 import { initBudMenuTable, getAllBudMenuItems, getActiveBudMenuItems, createBudMenuItem, updateBudMenuItem, deleteBudMenuItem, seedBudMenuItems } from './budMenuDb.js';
-import { initWaitlistTable, addToWaitlist, getWaitlist } from './waitlistDb.js';
+import { initWaitlistTable, addToWaitlist, getWaitlist, waitlistStorageMode } from './waitlistDb.js';
 import { timingSafeEqual } from 'crypto';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -457,10 +457,19 @@ app.post('/api/waitlist', async (req, res) => {
   }
 });
 
+app.get('/api/health', (req, res) => {
+  res.json({
+    ok: true,
+    waitlistStorage: waitlistStorageMode(),
+    stripeEnabled: isStripeConfigured(),
+    adminConfigured: Boolean(process.env.ADMIN_PASSWORD),
+  });
+});
+
 app.get('/api/admin/waitlist', async (req, res) => {
   try {
     const emails = await getWaitlist();
-    res.json({ data: emails });
+    res.json({ data: emails, storage: waitlistStorageMode() });
   } catch (error) {
     console.error('Error fetching waitlist:', error);
     res.status(500).json({ error: 'Failed to fetch waitlist' });
