@@ -1,0 +1,11 @@
+SAMEDI ET DIMANCHE — UPDATE 61: COMPLETE SITE
+
+Contains all current site code, bundled assets, and uploaded media
+referenced by the workspace settings and catalog, including inactive products.
+Excludes unreferenced uploads, old watch renders, local tools,
+dependencies, source references, generated previews and private data.
+Database records are not exported. This is not a live-site data backup.
+Keep existing hosting variables/secrets, database and live media.
+Run npm ci, then restart with npm start (Node 20 or later).
+Original source photos and old watch renders remain in the workspace.
+This package does not contain customer data or secret credentials.

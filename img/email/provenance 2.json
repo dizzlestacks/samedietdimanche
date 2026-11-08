@@ -1,8 +1,0 @@
-{
-  "logo": "Delivered emails reference /img/newlogo.png, the unaltered original floral mark.",
-  "watch-black.png": ["img/watch-atelier-v6/band-black.png", "img/watch-atelier-v6/case.png", "img/watch-atelier-v6/face-black.png"],
-  "watch-red.png": ["img/watch-atelier-v6/band-red.png", "img/watch-atelier-v6/case.png", "img/watch-atelier-v6/face-red.png"],
-  "watch-green.png": ["img/watch-atelier-v6/band-green.png", "img/watch-atelier-v6/case.png", "img/watch-atelier-v6/face-green.png"],
-  "method": "Original full transparent canvas alpha-composited band, case, face in storefront order; proportionally downsampled to 660 x 880; lossless optimized PNG. No cropping, recoloring or generated imagery.",
-  "scope": "Studio visualizations only. Images make no pricing, stock, shipping or availability claim."
-}
