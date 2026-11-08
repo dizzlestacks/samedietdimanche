@@ -17,7 +17,7 @@ LIVE/
 ├─ watches.html          Watches waitlist (with collapsible specs)
 ├─ budmenu.html          Cannabis menu (Canada-only)
 ├─ shop.html             Shop hub
-├─ clothing.html         Clothing collection (Stripe)
+
 ├─ socials.html          Socials
 ├─ admin.html            Admin panel (password-protected)
 ├─ css/                  All stylesheets
@@ -26,11 +26,11 @@ LIVE/
 │   └─ uploads/          User-uploaded product images (writable at runtime)
 ├─ server/
 │   ├─ index.js          Express server (port 5000 by default)
-│   ├─ stripeClient.js   Stripe client
+
 │   ├─ webhookHandlers.js
 │   ├─ budMenuDb.js      PostgreSQL bud-menu CRUD
 │   ├─ waitlistDb.js     PostgreSQL waitlist storage
-│   └─ seed-products.js  One-time Stripe product seeder
+
 ├─ package.json
 ├─ package-lock.json
 ├─ railway.json          Railway deploy config (builder + start + healthcheck)
@@ -46,8 +46,7 @@ LIVE/
 
 - **Node.js 20+**
 - **PostgreSQL** (any provider: Neon, Supabase, Railway, RDS, self-hosted)
-- (Optional) A **Stripe account** with API keys — only for the clothing shop +
-  checkout. Without Stripe the site runs normally and the shop shows
+
   "Collection coming soon".
 
 ---
@@ -60,9 +59,7 @@ Copy `.env.example` to `.env` and fill in real values. The variables are:
 |--------------------------|----------|------------|
 | `DATABASE_URL`           | ✅       | Postgres connection string |
 | `ADMIN_PASSWORD`         | ✅       | Password for `/admin` (username is `admin`) |
-| `STRIPE_SECRET_KEY`      | optional | `sk_live_...` or `sk_test_...` — enables the shop |
-| `STRIPE_PUBLISHABLE_KEY` | optional | `pk_live_...` or `pk_test_...` — enables the shop |
-| `STRIPE_WEBHOOK_SECRET`  | optional | `whsec_...` for webhook signature verification |
+
 | `PORT`                   | optional | Defaults to `5000` |
 | `DATA_DIR`               | optional | Folder for file-backed waitlist/settings storage (point it at a persistent disk/volume, e.g. `/data`, to survive redeploys without a database) |
 
@@ -81,18 +78,14 @@ npm start
 The site will be live on `http://localhost:5000`. The server automatically:
 
 - Creates the `waitlist_emails` and `bud_menu_items` tables on first boot
-- Runs Stripe sync migrations
+
 - Serves all static HTML/CSS/JS/images from the bundle root
 
 ---
 
-## 4. (Optional) Seed your Stripe catalog
-
 ```bash
 npm run seed
 ```
-
-This creates the starter clothing products in your Stripe account.
 
 ---
 
@@ -105,21 +98,15 @@ This creates the starter clothing products in your Stripe account.
 The admin has four tabs:
 
 1. **Overview** — dashboard with stat cards (waitlist totals, signups by category, active products, bud items), a recent-signups list, and quick-action shortcuts
-2. **Shop Products** — manage Stripe products (create, edit, upload images, deactivate); live search
+
 3. **Bud Menu** — manage the cannabis menu (CRUD on the PostgreSQL `bud_menu_items` table); live search
 4. **Waitlist** — view, filter (All / Bud / Watches), export CSV, copy as plaintext
 
 ---
 
-## 6. Stripe webhook (optional but recommended)
-
-In your Stripe dashboard, add an endpoint:
-
-```
-https://your-domain.com/api/stripe/webhook
 ```
 
-Copy the signing secret it gives you into `STRIPE_WEBHOOK_SECRET`.
+```
 
 ---
 
@@ -140,9 +127,7 @@ Copy the signing secret it gives you into `STRIPE_WEBHOOK_SECRET`.
    required, or you'll see `ECONNREFUSED ... 5432` errors and a broken site.
 3. **Add the other variables** under your service's **Variables** tab:
    - `ADMIN_PASSWORD`
-   - `STRIPE_SECRET_KEY`
-   - `STRIPE_PUBLISHABLE_KEY`
-   - `STRIPE_WEBHOOK_SECRET` (optional)
+
    - `PUBLIC_URL` is optional on Railway — it auto-detects the public domain.
 4. Railway auto-detects `npm start` from `package.json`. The server binds to
    the port Railway provides automatically (no PORT setting needed).
@@ -170,4 +155,6 @@ Then put nginx or Caddy in front for TLS and a real domain.
   Cloudflare R2) — otherwise uploads disappear on redeploy.
 - The admin routes (`/admin`, `/admin.html`, `/api/admin/*`) are all
   protected by HTTP Basic Auth. Never share your `ADMIN_PASSWORD`.
-- For live Stripe payments, use `sk_live_...` / `pk_live_...` keys.
+
+
+> Payments are currently disabled site-wide. The shop shows "coming soon" and the watch page runs in waitlist mode until a new payment method is added.

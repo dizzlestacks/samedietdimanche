@@ -1,0 +1,298 @@
+/* v37 — a compact editorial launch panel, only in combined preview mode.
+   Visibility and DOM placement belong to watch-page.js. No layout rule here
+   enables the countdown, signup form, catalog, or optional launch content. */
+body.watch-launch-preview .waitlist-page {
+  justify-content: flex-start;
+}
+
+body.watch-launch-preview #watch-waitlist {
+  width: 100%;
+  max-width: none;
+  margin: 16px 0 12px;
+  padding: 20px 16px 0;
+  border: 1px solid var(--atelier-line);
+  background: rgba(73, 35, 49, .2);
+  text-align: left;
+}
+
+body.watch-launch-preview #watch-waitlist > * {
+  min-width: 0;
+}
+
+body.watch-launch-preview #watch-waitlist .animate-in {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-cta-text {
+  margin: 0 0 16px;
+}
+
+body.watch-launch-preview #wl-headline {
+  margin: 0 0 6px;
+  font-size: clamp(20px, 3vw, 26px);
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.4;
+  letter-spacing: .035em;
+  text-align: left;
+}
+
+body.watch-launch-preview #wl-sub {
+  font-size: 11px;
+  font-weight: 300;
+  line-height: 1.7;
+  letter-spacing: .06em;
+  text-transform: none;
+  color: #d5c7c1;
+  opacity: .9;
+  text-align: left;
+}
+
+body.watch-launch-preview #sd-countdown {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 16px;
+  padding: 12px 0;
+  border: 0;
+  border-top: 1px solid var(--atelier-line);
+  border-bottom: 1px solid var(--atelier-line);
+  background: transparent;
+}
+
+body.watch-launch-preview #sd-countdown :is(.sd-countdown-title, .sd-count-title) {
+  margin: 0 0 10px;
+  font-size: 10px;
+  line-height: 1.5;
+  letter-spacing: .12em;
+  text-indent: 0;
+  color: var(--rose-gold-light);
+}
+
+body.watch-launch-preview #sd-countdown :is(.sd-countdown-unit strong, .sd-count-num) {
+  font-size: clamp(24px, 6vw, 30px);
+  font-weight: 300;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  background: none;
+  color: var(--rose-gold-light);
+  -webkit-text-fill-color: currentColor;
+}
+
+body.watch-launch-preview #sd-countdown .sd-count-unit {
+  flex: 1;
+  min-width: 0;
+  padding: 0 4px;
+}
+
+body.watch-launch-preview #sd-countdown :is(.sd-countdown-unit span, .sd-count-label) {
+  margin-top: 4px;
+  font-size: 9px;
+  line-height: 1.5;
+  letter-spacing: .06em;
+  text-indent: 0;
+  color: #d5c7c1;
+}
+
+body.watch-launch-preview #sd-countdown .sd-count-foot {
+  display: none;
+}
+
+body.watch-launch-preview #waitlist-form {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 14px;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-input-wrap {
+  background: rgba(27, 14, 20, .3);
+  transition: none;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-input-wrap:focus-within {
+  border-color: var(--rose-gold-light);
+  box-shadow: none;
+}
+
+body.watch-launch-preview #wl-email {
+  min-height: 48px;
+  padding: 12px 10px;
+  font-size: 16px;
+  letter-spacing: .01em;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-btn {
+  min-height: 48px;
+  padding: 12px 10px;
+  font-size: 10px;
+  letter-spacing: .08em;
+  transition: none;
+}
+
+body.watch-launch-preview #wl-msg {
+  margin: 8px 0 0;
+  min-height: 0;
+  font-size: 11px;
+  line-height: 1.6;
+  letter-spacing: .02em;
+  text-transform: none;
+}
+
+body.watch-launch-preview #wl-msg:empty {
+  display: none;
+}
+
+body.watch-launch-preview #sd-edition {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 14px;
+}
+
+body.watch-launch-preview #sd-edition .sd-edition-text {
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: .08em;
+}
+
+body.watch-launch-preview #sd-edition .sd-edition-text strong {
+  color: var(--rose-gold-light);
+}
+
+body.watch-launch-preview #sd-edition .sd-edition-fill {
+  background: var(--rose-gold);
+  transition: none;
+}
+
+body.watch-launch-preview #sd-share {
+  width: 100%;
+  max-width: none;
+  margin: 0 0 14px;
+  animation: none;
+}
+
+body.watch-launch-preview #sd-share .sd-share-position {
+  font-size: 16px;
+  color: var(--rose-gold-light);
+}
+
+body.watch-launch-preview #sd-share .sd-share-note {
+  font-size: 10px;
+  line-height: 1.6;
+  letter-spacing: .04em;
+}
+
+body.watch-launch-preview #sd-share :is(.sd-share-input, .sd-share-copy) {
+  min-height: 44px;
+  border-color: var(--atelier-line);
+}
+
+body.watch-launch-preview #sd-share .sd-share-copy {
+  padding: 0 12px;
+  color: var(--rose-gold-light);
+  letter-spacing: .06em;
+}
+
+body.watch-launch-preview #wl-follow-reveal.is-visible {
+  margin: 0 0 12px;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-details-toggle {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  border-bottom: 0;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-details-summary {
+  min-height: 44px;
+  padding: 12px 0;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-details-label {
+  font-size: 10px;
+  letter-spacing: .12em;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-details-body {
+  padding: 4px 0 16px;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-spec-row {
+  align-items: baseline;
+  gap: 12px;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-spec-dot {
+  display: none;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-spec-label {
+  flex: 0 0 86px;
+  font-size: 9px;
+  line-height: 1.7;
+  letter-spacing: .06em;
+}
+
+body.watch-launch-preview #watch-waitlist .wl-spec-value {
+  min-width: 0;
+  font-size: 10px;
+  line-height: 1.7;
+  letter-spacing: .025em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+body.watch-launch-preview #watch-waitlist :is(button, a, summary):focus-visible {
+  outline: 1px solid var(--rose-gold-light);
+  outline-offset: 3px;
+}
+
+/* Keep the catalog's four existing views and watch layers intact. */
+body.watch-launch-preview #watch-catalog {
+  padding-top: 0;
+}
+
+@media (min-width: 768px) {
+  body.watch-launch-preview #watch-waitlist {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 24px;
+    padding: 22px 24px 0;
+  }
+
+  body.watch-launch-preview #watch-waitlist .wl-cta-text {
+    flex: 0 0 100%;
+  }
+
+  body.watch-launch-preview #sd-countdown {
+    flex: 1 1 calc(50% - 12px);
+    width: auto;
+  }
+
+  body.watch-launch-preview #waitlist-form {
+    flex: 1 1 calc(50% - 12px);
+    width: auto;
+  }
+
+  body.watch-launch-preview #sd-edition {
+    order: 1;
+    flex-basis: 100%;
+  }
+
+  body.watch-launch-preview #sd-share {
+    order: 2;
+    flex-basis: 100%;
+  }
+
+  body.watch-launch-preview #wl-follow-reveal {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  body.watch-launch-preview #watch-waitlist .wl-details-toggle {
+    order: 4;
+    flex-basis: 100%;
+  }
+}

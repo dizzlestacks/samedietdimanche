@@ -1,0 +1,52 @@
+/* Update28 — collection detail, in the existing gold / rose brand language. */
+.product-options{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.8rem 0 0}
+.product-option label{display:block;color:var(--gold);font-size:.7rem;letter-spacing:.1em;margin-bottom:.6rem}
+.product-option select{width:100%;min-height:44px;padding:.7rem;background:#221826;color:var(--off-white);border:1px solid rgba(201,169,110,.35);font:inherit;font-size:16px}
+.product-option-stock{grid-column:1/-1;font-size:.75rem;line-height:1.8;color:var(--gold-light);margin:0}
+@media(max-width:767px){.product-options{grid-template-columns:1fr}}
+.product-page{max-width:1200px;width:100%;margin:0 auto;padding:2rem clamp(1.2rem,4vw,4rem) 4rem;position:relative;z-index:1;font-family:var(--font-sans)}
+.product-page [hidden],.product-zoom [hidden]{display:none!important}
+.product-back{display:inline-block;color:var(--gold);font-size:.7rem;letter-spacing:.12em;text-decoration:none;margin:1.5rem 0 2rem}
+.product-detail{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:clamp(2rem,5vw,5rem);align-items:start}
+.product-stage{position:relative;background:rgba(240,236,228,.035);border:1px solid rgba(201,169,110,.18);aspect-ratio:1/1.12;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.product-stage>img{width:100%;height:100%;object-fit:contain}
+.product-image-action{position:absolute;inset:0;background:none;border:0;cursor:zoom-in}
+.product-image-action span{position:absolute;bottom:1rem;right:1rem;background:#221826;color:var(--off-white);padding:.65rem;font:inherit;font-size:.65rem;letter-spacing:.1em}
+.product-image-empty{padding:2rem;text-align:center;color:var(--gold);font-size:.75rem;line-height:1.8}
+.product-gallery-controls{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;color:var(--gold);font-size:.7rem}
+.product-gallery-controls button,.product-quantity button,.product-zoom button{border:1px solid rgba(201,169,110,.35);background:rgba(22,14,27,.8);color:var(--off-white);padding:.65rem 1rem;font:inherit;cursor:pointer;min-height:44px}
+.product-thumbnails{display:flex;gap:.65rem;overflow-x:auto;padding:0 0 1rem}
+.product-thumbnail{flex:0 0 72px;height:86px;padding:3px;border:1px solid rgba(201,169,110,.2);background:rgba(240,236,228,.04);cursor:pointer;color:var(--gold);font:inherit;font-size:.65rem}
+.product-thumbnail[aria-pressed=true]{border-color:var(--gold)}
+.product-thumbnail img{height:100%;width:100%;object-fit:contain}
+.product-copy{padding:1.5rem 0}
+.product-eyebrow{color:var(--gold);font-size:.6rem;letter-spacing:.28em;text-transform:uppercase;margin-bottom:1.5rem}
+.product-name-detail{font-family:var(--font-sans);font-size:clamp(1.5rem,3vw,2.5rem);font-weight:300;letter-spacing:.04em;line-height:1.35}
+.product-price-detail{font-size:1rem;letter-spacing:.1em;color:var(--gold-light);margin:1.5rem 0 2rem}
+.product-description-detail{white-space:pre-wrap;font-size:.8rem;line-height:2;color:var(--off-white);opacity:.85;border-top:1px solid rgba(201,169,110,.2);padding-top:1.5rem}
+.product-quantity{margin:2rem 0;display:flex;align-items:center;gap:1rem;font-size:.75rem}
+.product-quantity input{width:3.5rem;min-height:44px;background:transparent;border:1px solid rgba(201,169,110,.3);color:var(--off-white);font:inherit;text-align:center}
+.product-actions{display:flex;flex-direction:column;gap:.8rem}
+.product-action{padding:1rem;border:1px solid var(--gold);background:var(--gold);color:#201525;font:inherit;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;min-height:48px}
+.product-action.secondary{background:transparent;color:var(--gold)}
+.product-action:disabled,button:disabled{opacity:.45;cursor:not-allowed}
+.product-status{font-size:.75rem;line-height:1.9;margin-top:1rem;min-height:1.5rem}
+.product-status a,.product-state a{color:var(--gold)}
+.product-state{text-align:center;padding:5rem 1rem;line-height:2;font-size:.85rem}
+.product-state h1{font-size:1.5rem;font-weight:300;margin-bottom:1rem}
+.product-state .product-action{margin-top:1.5rem}
+.product-skeleton{min-height:400px;background:rgba(201,169,110,.07);animation:product-pulse 1.5s ease-in-out infinite}
+.product-zoom{position:fixed;inset:0;background:rgba(14,9,22,.97);border:0;color:var(--off-white);width:100%;height:100dvh;max-width:none;max-height:none;padding:1rem;z-index:1000}
+.product-zoom::backdrop{background:rgba(14,9,22,.95)}
+.product-zoom-tools{display:flex;justify-content:flex-end;gap:.7rem;position:relative;z-index:2}
+.product-zoom-viewport{height:calc(100% - 70px);overflow:auto;display:grid;place-items:center}
+.product-zoom-viewport img{max-width:100%;max-height:100%;object-fit:contain}
+.product-zoom-viewport.is-enlarged{display:block}
+.product-zoom-viewport.is-enlarged img{max-width:none;max-height:none;width:200%;height:auto}
+.product-card-link{display:block;text-decoration:none;color:inherit}
+.watch-shop-img-wrap:empty{min-height:180px}
+.watch-shop-card .product-card-link:focus-visible,.product-page :focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+.watch-shop-card .product-view-link{display:block;margin:1rem 0;color:var(--gold);font-family:var(--font-sans);font-size:.7rem;letter-spacing:.1em}
+@keyframes product-pulse{50%{opacity:.4}}
+@media(max-width:767px){.product-detail{grid-template-columns:1fr;gap:1rem}.product-copy{padding-top:1rem}.product-page{padding-top:1rem}.product-back{margin-top:1rem}.product-stage{aspect-ratio:1}.product-quantity{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){.product-skeleton{animation:none}}

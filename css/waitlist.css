@@ -1,3 +1,12 @@
+/* ── Brand font: Emilea ── */
+@font-face {
+  font-family: 'Emilea';
+  src: url('../fonts/Emilea.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ─── Variables ──────────────────────────────────────────── */
 :root {
   --rose-gold:       #C4956A;
@@ -7,7 +16,7 @@
   --black:           #080808;
   --off-white:       #f0ece4;
   --gray:            #666;
-  --font-serif:      'Cormorant Garamond', Georgia, serif;
+  --font-serif:      'Emilea', 'Cormorant Garamond', Georgia, serif;
   --font-sans:       'Montserrat', sans-serif;
 }
 
@@ -129,9 +138,12 @@ body.wl-bud {
 
 .landing-nav {
   display: flex;
+  flex-wrap: wrap;
   align-items: stretch;
   justify-content: center;
-  gap: 0;
+  gap: 0.5rem 2.5rem;
+  width: min(900px, 94vw);
+  margin: 0 auto;
 }
 
 .landing-nav-item {
@@ -141,11 +153,23 @@ body.wl-bud {
   align-items: center;
   justify-content: center;
   gap: 0.55rem;
-  padding: 2.2rem 3rem;
+  padding: 2.2rem 2.4rem;
   text-decoration: none;
   color: var(--off-white);
   transition: color 0.4s ease;
   overflow: visible;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: navFadeIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(0.4s + var(--nav-delay, 0s));
+}
+
+@keyframes navFadeIn {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-nav-item { animation: none; opacity: 1; transform: none; }
 }
 
 .landing-nav-item::before {
@@ -165,6 +189,7 @@ body.wl-bud {
   font-size: clamp(0.7rem, 1.8vw, 0.95rem);
   font-weight: 300;
   letter-spacing: 0.45em;
+  margin-right: -0.45em; /* offset trailing letter-space so text is truly centered */
   text-transform: uppercase;
   line-height: 1;
   white-space: nowrap;
@@ -183,6 +208,7 @@ body.wl-bud {
   font-size: 0.42rem;
   font-weight: 300;
   letter-spacing: 0.4em;
+  margin-right: -0.4em;
   text-transform: uppercase;
   color: var(--rose-gold);
   opacity: 0;
@@ -212,18 +238,27 @@ body.wl-bud {
   width: 70%;
 }
 
-.landing-nav-divider {
-  width: 1px;
-  align-self: stretch;
-  margin: 1.5rem 0;
-  background: linear-gradient(to bottom, transparent, rgba(196,149,106,0.35), transparent);
+.landing-nav-divider { display: none; }
+
+/* On phones, keep the links in one horizontal row, evenly spaced
+   and centered under the logo. */
+@media (max-width: 640px) {
+  .landing-nav {
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+  }
+  .landing-nav-item { padding: 1rem 0; flex: 1 1 0; min-width: 0; }
+  .landing-nav-label { font-size: 0.68rem; }
+  .landing-nav-sub { display: none; }
 }
 
 @media (max-width: 480px) {
   .landing-logo { margin-bottom: 3rem; }
-  .landing-nav-item { padding: 1.8rem 1.4rem; }
-  .landing-nav-label { letter-spacing: 0.35em; }
-  .landing-nav-item:hover .landing-nav-label { letter-spacing: 0.5em; }
+  .landing-nav-label { font-size: 0.6rem; letter-spacing: 0.28em; margin-right: -0.28em; }
+  .landing-nav-item:hover .landing-nav-label { letter-spacing: 0.4em; }
 }
 
 /* ─── Logo block ─────────────────────────────────────────── */
@@ -253,6 +288,7 @@ body.wl-bud {
   font-size: clamp(0.45rem, 1.1vw, 0.56rem);
   font-weight: 300;
   letter-spacing: 0.5em;
+  margin-right: -0.5em;
   text-transform: uppercase;
   color: var(--rose-gold);
   opacity: 0.85;
@@ -664,10 +700,11 @@ body.wl-bud {
 }
 
 .copyright {
-  font-family: var(--font-sans);
+  font-family: var(--font-serif);
   font-size: 0.48rem;
   font-weight: 300;
   letter-spacing: 0.3em;
+  margin-right: -0.3em;
   text-transform: uppercase;
   color: var(--gray);
   opacity: 0.6;
@@ -711,50 +748,408 @@ body.wl-bud {
 /* --- Watch shop mode (toggleable from admin) --- */
 .watch-shop {
   width: 100%;
-  max-width: 720px;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  margin: 0.5rem auto 1rem;
+  max-width: 860px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.6rem;
+  margin: 1.2rem auto 1.5rem;
+  padding: 0 1rem;
 }
 .watch-shop-card {
   display: flex;
-  gap: 1.25rem;
-  align-items: center;
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  background: rgba(255, 255, 255, 0.02);
-  padding: 1.1rem 1.25rem;
-  text-align: left;
+  flex-direction: column;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(212, 175, 55, 0.06), transparent 60%),
+    rgba(8, 12, 20, 0.6);
+  text-align: center;
+  overflow: hidden;
+  position: relative;
+  opacity: 0;
+  transform: translateY(18px);
+  animation: shopCardIn 0.7s ease forwards;
+  animation-delay: var(--delay, 0.2s);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease;
 }
+@keyframes shopCardIn { to { opacity: 1; transform: translateY(0); } }
+.watch-shop-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(212, 175, 55, 0.55);
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5), 0 0 35px rgba(212, 175, 55, 0.1);
+}
+.watch-shop-img-wrap { position: relative; }
 .watch-shop-img {
-  width: 110px;
-  height: 110px;
+  width: 100%;
+  height: 260px;
   object-fit: cover;
-  flex-shrink: 0;
+  display: block;
+  filter: saturate(0.92);
+  transition: transform 0.6s ease;
 }
-.watch-shop-info { flex: 1; min-width: 0; }
+.watch-shop-card:hover .watch-shop-img { transform: scale(1.04); }
+.watch-shop-img-empty { background: linear-gradient(160deg, #0b101c, #131a2a); }
+.watch-shop-badge {
+  position: absolute;
+  top: 0.8rem; left: 0.8rem;
+  font-size: 0.55rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #0a0e16;
+  background: linear-gradient(120deg, #f4e3ae, #d4af37);
+  padding: 0.3rem 0.7rem 0.28rem;
+}
+.watch-shop-info { padding: 1.3rem 1.4rem 1.6rem; display: flex; flex-direction: column; align-items: center; }
 .watch-shop-name {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.35rem;
-  letter-spacing: 0.06em;
-  margin: 0 0 0.25rem;
+  font-size: 1.55rem;
+  letter-spacing: 0.07em;
+  margin: 0 0 0.35rem;
 }
 .watch-shop-desc {
   font-size: 0.8rem;
-  opacity: 0.7;
-  margin: 0 0 0.5rem;
+  opacity: 0.65;
+  line-height: 1.55;
+  margin: 0 0 0.4rem;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 2;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
 }
+.watch-shop-rule {
+  width: 46px; height: 1px; margin: 0.55rem auto 0.7rem;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.7), transparent);
+}
 .watch-shop-price {
-  font-size: 0.95rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  color: #d4af37;
+  letter-spacing: 0.08em;
+  margin: 0 0 1rem;
+}
+.watch-shop-buy { padding: 0.65rem 2.2rem; }
+.watch-shop-soon { padding: 0.65rem 2.2rem; opacity: 0.5; cursor: default; }
+
+/* --- Live badge (shop mode) --- */
+.sd-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55em;
+  font-size: 0.62rem;
+  letter-spacing: 0.5em;
+  text-indent: 0.5em; /* balance the letter-spacing trailing gap */
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.85);
+  margin: 0 0 1.2rem;
+}
+.sd-live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: #d4af37;
+  box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.6);
+  animation: sdLivePulse 1.8s ease-out infinite;
+}
+@keyframes sdLivePulse {
+  0% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.55); }
+  70% { box-shadow: 0 0 0 9px rgba(212, 175, 55, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0); }
+}
+body.sd-shop-live .wl-cta-headline { font-size: clamp(2.2rem, 6vw, 3.4rem); }
+
+/* --- Site extras: veil, transitions, theme, announcement --- */
+.sd-veil {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #0a0e14;
+  display: flex; align-items: center; justify-content: center;
+  transition: opacity 0.7s ease;
+}
+.sd-veil-logo { width: 84px; opacity: 0.9; animation: sdPulse 1.4s ease-in-out infinite; }
+@keyframes sdPulse { 0%,100% { transform: scale(1); opacity: 0.75; } 50% { transform: scale(1.08); opacity: 1; } }
+.sd-veil-hidden { opacity: 0; pointer-events: none; }
+body.sd-leaving { opacity: 0; transition: opacity 0.3s ease; }
+
+.sd-announce {
+  position: relative; z-index: 50;
+  background: linear-gradient(90deg, rgba(212,175,55,0.12), rgba(212,175,55,0.22), rgba(212,175,55,0.12));
+  border-bottom: 1px solid rgba(212,175,55,0.3);
+  text-align: center; padding: 0.55rem 1rem;
+}
+.sd-announce-text {
+  font-family: 'Montserrat', sans-serif; font-size: 0.7rem;
+  letter-spacing: 0.25em; text-transform: uppercase; color: #d4af37;
+}
+
+body.theme-samedi { --sd-tint: rgba(212,175,55,0.05); }
+body.theme-dimanche { --sd-tint: rgba(190,200,220,0.05); }
+body.theme-samedi::after, body.theme-dimanche::after {
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 1;
+  background: var(--sd-tint);
+}
+
+/* --- Countdown (grande) --- */
+.sd-countdown {
+  margin: 1.6rem auto 1rem;
+  padding: 0 1rem;
+  max-width: 720px;
+  text-align: center;
+}
+.sd-count-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.1em;
+  font-size: 0.62rem;
+  font-weight: 300;
+  letter-spacing: 0.6em;
+  text-indent: 0.6em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.85);
+  margin: 0 0 1.6rem;
+}
+.sd-count-title::before,
+.sd-count-title::after {
+  content: '';
+  flex: 0 1 70px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.45));
+}
+.sd-count-title::after {
+  background: linear-gradient(90deg, rgba(212, 175, 55, 0.45), transparent);
+}
+.sd-count-row {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+.sd-count-unit {
+  text-align: center;
+  min-width: clamp(64px, 18vw, 140px);
+  padding: 0 clamp(0.4rem, 2vw, 1.4rem);
+  position: relative;
+}
+.sd-count-unit + .sd-count-unit::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 12%;
+  height: 76%;
+  width: 1px;
+  background: linear-gradient(180deg, transparent, rgba(212, 175, 55, 0.35), transparent);
+}
+.sd-count-num {
+  display: block;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.9rem, 10vw, 5.4rem);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: 0.02em;
+  background: linear-gradient(180deg, #f7ecc8 0%, #e9cf8a 40%, #c9a23a 78%, #97782a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-variant-numeric: tabular-nums;
+}
+.sd-count-label {
+  display: block;
+  font-size: 0.52rem;
+  font-weight: 300;
+  letter-spacing: 0.42em;
+  text-indent: 0.42em;
+  text-transform: uppercase;
+  color: rgba(244, 235, 210, 0.5);
+  margin-top: 0.8rem;
+}
+.sd-count-foot {
+  width: min(360px, 70%);
+  height: 1px;
+  margin: 1.7rem auto 0;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.5), transparent);
+  position: relative;
+}
+.sd-count-foot::after {
+  content: '';
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 5px; height: 5px;
+  transform: translate(-50%, -50%) rotate(45deg);
+  background: rgba(212, 175, 55, 0.85);
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+}
+@media (max-width: 480px) {
+  .sd-count-title { letter-spacing: 0.42em; text-indent: 0.42em; }
+  .sd-count-label { font-size: 0.46rem; }
+}
+
+/* --- Edition counter --- */
+.sd-edition { text-align: center; margin: 0.9rem auto 0; max-width: 320px; }
+.sd-edition-text { font-size: 0.7rem; letter-spacing: 0.22em; text-transform: uppercase; opacity: 0.8; margin-bottom: 0.45rem; }
+.sd-edition-text strong { color: #d4af37; }
+.sd-edition-bar { height: 2px; background: rgba(255,255,255,0.12); position: relative; }
+.sd-edition-fill { position: absolute; left: 0; top: 0; bottom: 0; background: #d4af37; transition: width 1.2s ease; }
+
+/* --- Dial switcher & 360 viewer --- */
+.sd-watch-visual { margin: 1.2rem auto 0.4rem; max-width: 340px; text-align: center; }
+.sd-watch-img { width: 100%; max-width: 300px; border-radius: 2px; cursor: grab; user-select: none; -webkit-user-drag: none; }
+.sd-watch-img:active { cursor: grabbing; }
+.sd-360-hint { font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase; opacity: 0.5; margin-top: 0.4rem; }
+.sd-dials { display: flex; gap: 0.7rem; justify-content: center; margin-top: 0.9rem; flex-wrap: wrap; }
+.sd-dial-btn {
+  background: none; border: 1px solid rgba(255,255,255,0.2); color: inherit;
+  font-family: 'Montserrat', sans-serif; font-size: 0.6rem; letter-spacing: 0.2em;
+  text-transform: uppercase; padding: 0.45rem 0.9rem; cursor: pointer; transition: all 0.3s ease;
+}
+.sd-dial-btn.active, .sd-dial-btn:hover { border-color: #d4af37; color: #d4af37; }
+
+/* --- Hero video --- */
+.sd-hero-video-wrap { margin: 1rem auto 0.4rem; max-width: 420px; }
+.sd-hero-video { width: 100%; display: block; border: 1px solid rgba(212,175,55,0.25); }
+
+/* --- Referral share --- */
+.sd-share { margin: 1.1rem auto 0; max-width: 420px; text-align: center; display: none; }
+.sd-share.visible { display: block; animation: fadeUp 0.8s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.sd-share-position { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: #d4af37; margin-bottom: 0.3rem; }
+.sd-share-note { font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; opacity: 0.7; margin-bottom: 0.7rem; }
+.sd-share-row { display: flex; gap: 0.5rem; }
+.sd-share-input {
+  flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15);
+  color: inherit; padding: 0.6rem 0.75rem; font-size: 0.75rem; min-width: 0;
+}
+.sd-share-copy {
+  background: none; border: 1px solid #d4af37; color: #d4af37; cursor: pointer;
+  font-family: 'Montserrat', sans-serif; font-size: 0.62rem; letter-spacing: 0.2em;
+  text-transform: uppercase; padding: 0 1rem; white-space: nowrap;
+}
+
+/* --- Lookbook --- */
+.lookbook-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.2rem; width: 100%; max-width: 1000px; margin: 2rem auto 0; padding: 0 1rem;
+}
+.lookbook-item {
+  position: relative; display: block; overflow: hidden;
+  border: 1px solid rgba(212,175,55,0.18); text-decoration: none;
+}
+.lookbook-item img { width: 100%; display: block; transition: transform 0.8s ease; aspect-ratio: 4/5; object-fit: cover; }
+.lookbook-item:hover img { transform: scale(1.04); }
+.lookbook-caption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 1.5rem 0.9rem 0.7rem;
+  background: linear-gradient(transparent, rgba(6,9,14,0.85));
+  color: #e8e6e1; font-family: 'Montserrat', sans-serif;
+  font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+}
+
+/* --- Apple-style shop scroll experience --- */
+.sd-reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.sd-reveal-in { opacity: 1; transform: none; }
+
+body.sd-shop-live .wl-cta-text { will-change: opacity, transform; }
+body.sd-shop-live .waitlist-page { gap: 0; }
+body.sd-shop-live .watch-shop { margin-bottom: 3.5rem; }
+
+.sd-360-section {
+  width: 100%;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 4.5rem 1rem 3.5rem;
+  text-align: center;
+  border-top: 1px solid rgba(212, 175, 55, 0.12);
+}
+.sd-360-eyebrow {
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: rgba(212, 175, 55, 0.75);
+  margin: 0 0 0.7rem;
+}
+.sd-360-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 400;
+  font-size: clamp(1.9rem, 5vw, 3rem);
+  letter-spacing: 0.06em;
+  margin: 0 0 0.5rem;
+  background: linear-gradient(120deg, #f4e3ae, #d4af37 55%, #f4e3ae);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.sd-360-sub {
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.55;
+  margin: 0 0 2rem;
+}
+.sd-360-section .sd-watch-visual { margin: 0 auto; }
+
+/* --- Homepage huge drop clock --- */
+.sd-home-clock { margin: 1.6rem auto 0.8rem; max-width: 900px; }
+.sd-home-clock .sd-count-num { font-size: clamp(3.2rem, 12vw, 7rem); }
+.sd-home-clock .sd-count-title { font-size: 0.7rem; }
+
+/* ── Inline menu (shown when the bud waitlist is off) ────── */
+.bud-inline-menu {
+  width: min(560px, 92vw);
+  margin: 0 auto 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  text-align: left;
+}
+.bud-inline-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid rgba(196, 149, 106, 0.22);
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+.bud-inline-img {
+  width: 52px;
+  height: 52px;
+  object-fit: cover;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.bud-inline-info { flex: 1; min-width: 0; }
+.bud-inline-name {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+}
+.bud-inline-meta {
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.6;
+  margin-top: 0.2rem;
+}
+.bud-inline-price {
+  font-size: 0.75rem;
   letter-spacing: 0.12em;
-  margin: 0 0 0.75rem;
+  white-space: nowrap;
+  color: var(--rose-gold, #c4956a);
 }
-.watch-shop-buy { padding: 0.6rem 1.6rem; }
-@media (max-width: 540px) {
-  .watch-shop-card { flex-direction: column; text-align: center; }
-  .watch-shop-img { width: 100%; height: auto; max-height: 220px; }
+
+/* ── Purchase button on inline bud menu cards ── */
+.bud-inline-buy {
+  flex-shrink: 0;
+  margin-left: 0.8rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.42rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #0d0f0d;
+  background: linear-gradient(135deg, #C9A96E, #b8945a);
+  border: none;
+  padding: 0.55rem 1.1rem;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
 }
+.bud-inline-buy:hover { opacity: 0.85; }
+.bud-inline-buy:disabled { opacity: 0.5; cursor: default; }

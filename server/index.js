@@ -3,13 +3,28 @@ import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
 import multer from 'multer';
-import { runMigrations } from 'stripe-replit-sync';
-import { getStripeSync, getUncachableStripeClient, getStripePublishableKey, isStripeConfigured } from './stripeClient.js';
-import { WebhookHandlers } from './webhookHandlers.js';
 import { initBudMenuTable, getAllBudMenuItems, getActiveBudMenuItems, createBudMenuItem, updateBudMenuItem, deleteBudMenuItem, seedBudMenuItems } from './budMenuDb.js';
-import { initWaitlistTable, addToWaitlist, getWaitlist, waitlistStorageMode } from './waitlistDb.js';
+import { initWaitlistTable, addToWaitlist, getWaitlist, waitlistStorageMode, findByRefCode, getReferralStatus } from './waitlistDb.js';
 import { initSettingsTable, getSettings, updateSettings } from './settingsDb.js';
+import { initReviewsTable, addReview, getReviews, setReviewApproval, deleteReview } from './reviewsDb.js';
+import { initAnalyticsTable, trackView, getAnalytics } from './analyticsDb.js';
+import { initProductsTable, listProducts, createProduct, updateProduct, deleteProduct, validateProductImages, validateProductVariants } from './productsDb.js';
+import { isEmailConfigured, sendEmail, brandTemplate } from './email.js';
 import { timingSafeEqual } from 'crypto';
+import { registerWatchRoutes } from './watchRoutes.js';
+import { registerCartRoutes } from './cartPricing.js';
+import { publicWatchSettings, publicWatchProducts } from './watchPricing.js';
+import { protectPrivateFiles } from './publicFiles.js';
+import { registerPayPalRoutes } from './paypalRoutes.js';
+import { createPaymentReliability } from './paymentReliability.js';
+import { isPayPalConfigured } from './paypalClient.js';
+import { accessSettings, createEarlyToken, verifyEarlyToken } from './earlyAccess.js';
+import { preorderAccess, registerPreorderRoutes } from './preorders.js';
+import { registerWaitlistImport } from './waitlistImport.js';
+import { registerPreorderInvitations } from './preorderInvitations.js';
+import { unsubscribeMarketing } from './waitlistDb.js';
+import { registerEmailCampaigns } from './emailCampaigns.js';
+import { watchAnnouncements, buildWatchAnnouncement } from './watchAnnouncements.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,14 +46,14 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  limits: { fileSize: 50 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
-    const allowed = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
+    const allowed = ['.jpg', '.jpeg', '.png', '.webp', '.gif', '.mp4', '.webm', '.mov'];
     const ext = path.extname(file.originalname).toLowerCase();
     if (allowed.includes(ext)) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed'));
+      cb(new Error('Only image or video files are allowed'));
     }
   },
 });
@@ -93,35 +108,31 @@ function adminAuth(req, res, next) {
 app.use(['/admin', '/admin.html', '/api/admin'], adminAuth);
 app.use('/api/admin/', adminAuth);
 
-app.post(
-  '/api/stripe/webhook',
-  express.raw({ type: 'application/json' }),
-  async (req, res) => {
-    if (!isStripeConfigured()) {
-      return res.status(503).json({ error: 'Stripe is not configured' });
-    }
-    const signature = req.headers['stripe-signature'];
-    if (!signature) {
-      return res.status(400).json({ error: 'Missing stripe-signature' });
-    }
-
-    try {
-      const sig = Array.isArray(signature) ? signature[0] : signature;
-      if (!Buffer.isBuffer(req.body)) {
-        console.error('STRIPE WEBHOOK ERROR: req.body is not a Buffer');
-        return res.status(500).json({ error: 'Webhook processing error' });
-      }
-      await WebhookHandlers.processWebhook(req.body, sig);
-      res.status(200).json({ received: true });
-    } catch (error) {
-      console.error('Webhook error:', error.message);
-      res.status(400).json({ error: 'Webhook processing error' });
-    }
-  }
-);
-
 app.set('trust proxy', true);
+app.use('/api/admin/waitlist/import',express.json({limit:'256kb'}));
 app.use(express.json());
+app.use('/email/unsubscribe', express.urlencoded({ extended: false, limit: '4kb' }));
+registerEmailCampaigns(app, { getWaitlist, unsubscribeMarketing, getPublicBaseUrl, isEmailConfigured, sendEmail });
+const customerSettings = preorderAccess(accessSettings(getSettings, findByRefCode));
+registerPreorderRoutes(app,{getSettings,updateSettings});
+registerWaitlistImport(app,{addToWaitlist});
+registerPreorderInvitations(app,{getSettings,getWaitlist,getPublicBaseUrl,isEmailConfigured,sendEmail});
+registerWatchRoutes(app, { getSettings, customerSettings, updateSettings, adminAuth });
+registerCartRoutes(app, { getSettings: customerSettings, listProducts });
+registerPayPalRoutes(app, { getSettings: customerSettings, listProducts });
+const paymentReliability = createPaymentReliability();
+app.get('/api/admin/payment-reliability', (req,res) => {
+  res.set('Cache-Control','no-store').json(paymentReliability.status());
+});
+
+// Page-view analytics (aggregate counts only — no cookies, no personal data)
+app.use((req, res, next) => {
+  if (req.method === 'GET' && !req.path.startsWith('/api') && !req.path.startsWith('/admin')
+      && !req.path.includes('.') || req.path.endsWith('.html')) {
+    if (!req.path.startsWith('/admin')) trackView(req.path);
+  }
+  next();
+});
 
 const geoCache = new Map();
 const GEO_CACHE_TTL = 600000;
@@ -186,125 +197,31 @@ app.get('/budmenu.html', budGeoBlock);
 app.get('/budmenu', budGeoBlock);
 
 app.get('/api/config', async (req, res) => {
-  if (!isStripeConfigured()) {
-    return res.json({ publishableKey: null, stripeEnabled: false });
-  }
-  try {
-    const publishableKey = await getStripePublishableKey();
-    res.json({ publishableKey, stripeEnabled: true });
-  } catch (error) {
-    console.error('Error getting config:', error);
-    res.status(500).json({ error: 'Failed to get config' });
-  }
+  res.set('Cache-Control', 'no-store');
+  res.json({ provider: 'paypal', checkoutEnabled: isPayPalConfigured() });
 });
 
 app.get('/api/products', async (req, res) => {
-  if (!isStripeConfigured()) {
-    return res.json({ data: [], stripeEnabled: false });
-  }
   try {
-    const stripe = await getUncachableStripeClient();
-    const products = await stripe.products.list({ active: true, limit: 20 });
-    const prices = await stripe.prices.list({ active: true, limit: 100 });
-
-    const productsWithPrices = products.data.map(product => {
-      const productPrices = prices.data.filter(p => p.product === product.id);
-      return {
-        id: product.id,
-        name: product.name,
-        description: product.description,
-        images: product.images,
-        metadata: product.metadata,
-        prices: productPrices.map(p => ({
-          id: p.id,
-          unit_amount: p.unit_amount,
-          currency: p.currency,
-        }))
-      };
-    });
-
-    res.json({ data: productsWithPrices });
+    const category = req.query.category === 'watch' || req.query.category === 'shop' ? req.query.category : null;
+    let products = await listProducts({ activeOnly: true, category });
+    // When the clothing shop is closed, hide shop-category products publicly.
+    const settings = await customerSettings(req);
+    if (settings.shopEnabled === false) {
+      products = products.filter(p => (p.category || 'shop') !== 'shop');
+    }
+    res.set('Cache-Control', 'no-store');
+    res.json({ data: publicWatchProducts(products, settings), checkoutEnabled: isPayPalConfigured() });
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ error: 'Failed to fetch products' });
   }
 });
 
-app.post('/api/checkout', async (req, res) => {
-  if (!isStripeConfigured()) {
-    return res.status(503).json({ error: 'The shop is coming soon — checkout is not available yet.' });
-  }
-  try {
-    const { priceId, quantity = 1 } = req.body;
-
-    if (!priceId || typeof priceId !== 'string') {
-      return res.status(400).json({ error: 'priceId is required' });
-    }
-
-    const qty = Math.max(1, Math.min(10, Math.floor(Number(quantity))));
-    if (isNaN(qty)) {
-      return res.status(400).json({ error: 'Invalid quantity' });
-    }
-
-    const stripe = await getUncachableStripeClient();
-
-    const price = await stripe.prices.retrieve(priceId);
-    if (!price || !price.active) {
-      return res.status(400).json({ error: 'Invalid or inactive price' });
-    }
-
-    const product = await stripe.products.retrieve(price.product);
-    if (!product || !product.active) {
-      return res.status(400).json({ error: 'Product is unavailable' });
-    }
-
-    const baseUrl = getPublicBaseUrl();
-
-    const session = await stripe.checkout.sessions.create({
-      line_items: [{ price: priceId, quantity: qty }],
-      mode: 'payment',
-      success_url: `${baseUrl}/shop.html?success=true`,
-      cancel_url: `${baseUrl}/shop.html?canceled=true`,
-      shipping_address_collection: {
-        allowed_countries: ['US', 'CA', 'GB'],
-      },
-    });
-
-    res.json({ url: session.url });
-  } catch (error) {
-    console.error('Error creating checkout:', error);
-    res.status(500).json({ error: 'Failed to create checkout session' });
-  }
-});
-
 app.get('/api/admin/products', async (req, res) => {
-  if (!isStripeConfigured()) {
-    return res.json({ data: [], stripeEnabled: false });
-  }
   try {
-    const stripe = await getUncachableStripeClient();
-    const products = await stripe.products.list({ limit: 100 });
-    const prices = await stripe.prices.list({ limit: 100 });
-
-    const productsWithPrices = products.data.map(product => {
-      const productPrices = prices.data.filter(p => p.product === product.id);
-      return {
-        id: product.id,
-        name: product.name,
-        description: product.description,
-        active: product.active,
-        images: product.images,
-        metadata: product.metadata,
-        prices: productPrices.map(p => ({
-          id: p.id,
-          unit_amount: p.unit_amount,
-          currency: p.currency,
-          active: p.active,
-        }))
-      };
-    });
-
-    res.json({ data: productsWithPrices });
+    const products = await listProducts();
+    res.json({ data: products, checkoutEnabled: isPayPalConfigured() });
   } catch (error) {
     console.error('Error fetching admin products:', error);
     res.status(500).json({ error: 'Failed to fetch products' });
@@ -320,11 +237,14 @@ app.post('/api/admin/upload', upload.single('image'), (req, res) => {
 });
 
 app.post('/api/admin/products', async (req, res) => {
-  if (!isStripeConfigured()) {
-    return res.status(503).json({ error: 'Stripe is not connected — shop products are disabled for now.' });
-  }
   try {
-    const { name, description, price, badge, image } = req.body;
+    const { name, description, price, badge, image, images, category, variants } = req.body;
+    if (variants !== undefined) {
+      try { validateProductVariants(variants); } catch (error) { return res.status(400).json({error:error.message}); }
+    }
+    if (images !== undefined) {
+      try { validateProductImages(images); } catch (error) { return res.status(400).json({error:error.message}); }
+    }
 
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
       return res.status(400).json({ error: 'Product name is required' });
@@ -333,39 +253,8 @@ app.post('/api/admin/products', async (req, res) => {
       return res.status(400).json({ error: 'Valid price is required' });
     }
 
-    const stripe = await getUncachableStripeClient();
-
-    const metadata = {};
-    if (badge) metadata.badge = badge;
-
-    const createParams = {
-      name: name.trim(),
-      description: description?.trim() || '',
-      metadata,
-    };
-    if (image) createParams.images = [image];
-
-    const product = await stripe.products.create(createParams);
-
-    const stripePrice = await stripe.prices.create({
-      product: product.id,
-      unit_amount: Math.round(Number(price) * 100),
-      currency: 'usd',
-    });
-
-    res.json({
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      active: product.active,
-      metadata: product.metadata,
-      prices: [{
-        id: stripePrice.id,
-        unit_amount: stripePrice.unit_amount,
-        currency: stripePrice.currency,
-        active: stripePrice.active,
-      }]
-    });
+    const product = await createProduct({ name, description, price, badge, image, images, category, variants });
+    res.json(product);
   } catch (error) {
     console.error('Error creating product:', error);
     res.status(500).json({ error: 'Failed to create product' });
@@ -373,84 +262,80 @@ app.post('/api/admin/products', async (req, res) => {
 });
 
 app.put('/api/admin/products/:id', async (req, res) => {
-  if (!isStripeConfigured()) {
-    return res.status(503).json({ error: 'Stripe is not connected — shop products are disabled for now.' });
+  if (req.body?.variants !== undefined) {
+    try { validateProductVariants(req.body.variants); } catch (error) { return res.status(400).json({error:error.message}); }
+  }
+  if (req.body?.images !== undefined) {
+    try { validateProductImages(req.body.images); } catch (error) { return res.status(400).json({error:error.message}); }
   }
   try {
-    const { id } = req.params;
-    const { name, description, active, badge, price, image } = req.body;
-
-    const stripe = await getUncachableStripeClient();
-
-    const updates = {};
-    if (name !== undefined) updates.name = name.trim();
-    if (description !== undefined) updates.description = description.trim();
-    if (active !== undefined) updates.active = Boolean(active);
-    if (badge !== undefined) updates.metadata = { badge: badge || '' };
-    if (image !== undefined) updates.images = image ? [image] : [];
-
-    const product = await stripe.products.update(id, updates);
-
-    let newPrice = null;
-    if (price !== undefined && !isNaN(Number(price)) && Number(price) > 0) {
-      const existingPrices = await stripe.prices.list({ product: id, active: true });
-      for (const p of existingPrices.data) {
-        await stripe.prices.update(p.id, { active: false });
-      }
-
-      newPrice = await stripe.prices.create({
-        product: id,
-        unit_amount: Math.round(Number(price) * 100),
-        currency: 'usd',
-      });
-    }
-
-    const activePrices = await stripe.prices.list({ product: id, active: true });
-
-    res.json({
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      active: product.active,
-      metadata: product.metadata,
-      prices: activePrices.data.map(p => ({
-        id: p.id,
-        unit_amount: p.unit_amount,
-        currency: p.currency,
-        active: p.active,
-      }))
-    });
+    const product = await updateProduct(req.params.id, req.body || {});
+    if (!product) return res.status(404).json({ error: 'Product not found' });
+    res.json(product);
   } catch (error) {
     console.error('Error updating product:', error);
-    res.status(500).json({ error: 'Failed to update product' });
+    res.status(error.status === 409 ? 409 : 500).json({ error: error.status === 409 ? error.message : 'Failed to update product' });
   }
 });
 
 app.delete('/api/admin/products/:id', async (req, res) => {
-  if (!isStripeConfigured()) {
-    return res.status(503).json({ error: 'Stripe is not connected — shop products are disabled for now.' });
-  }
   try {
-    const { id } = req.params;
-    const stripe = await getUncachableStripeClient();
-
-    await stripe.products.update(id, { active: false });
-
+    await deleteProduct(req.params.id);
     res.json({ success: true });
   } catch (error) {
-    console.error('Error deactivating product:', error);
-    res.status(500).json({ error: 'Failed to deactivate product' });
+    console.error('Error deleting product:', error);
+    res.status(500).json({ error: 'Failed to delete product' });
   }
 });
 
 app.post('/api/waitlist', async (req, res) => {
   try {
-    const { email, category } = req.body;
-    if (!email || typeof email !== 'string' || !email.includes('@')) {
+    const { email, category, ref } = req.body;
+    if (typeof email !== 'string' || email.trim().length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       return res.status(400).json({ error: 'Valid email is required' });
     }
-    const cat = (category === 'bud' || category === 'watches') ? category : 'watches';
-    const result = await addToWaitlist(email, cat);
+    const cat = (category === 'bud' || category === 'watches' || category === 'shop') ? category : 'watches';
+
+    const settings = await getSettings();
+    if (settings) {
+      const enabled = cat === 'bud'
+        ? settings.budWaitlistEnabled !== false
+        : cat === 'shop' ? settings.shopWaitlistEnabled === true
+        : settings.watchPreviewEnabled === true || (settings.watchesMode === 'waitlist' && settings.watchesWaitlistEnabled !== false);
+      if (!enabled) {
+        return res.status(403).json({ error: 'The waitlist is currently closed.' });
+      }
+    }
+
+    const result = await addToWaitlist(email, cat, ref, true);
+    result.earlyAccessEnabled = cat === 'watches' && settings.watchPreviewEnabled !== true && Boolean(settings.earlyAccessEnabled);
+    const earlyToken = result.earlyAccessEnabled ? createEarlyToken(result.refCode) : null;
+    if (result.added && earlyToken) result.earlyAccessUrl = '/watches.html?early=' + encodeURIComponent(earlyToken);
+    result.emailConfigured = isEmailConfigured();
+
+    // Welcome email (fire-and-forget; never blocks the signup)
+    if ((result.added || earlyToken) && isEmailConfigured()) {
+      const baseUrl = getPublicBaseUrl();
+      const waitlistPage = cat === 'shop' ? 'shop.html' : 'watches.html';
+      const shareUrl = `${baseUrl}/${waitlistPage}?ref=${result.refCode}`;
+      const early = earlyToken
+        ? `<p style="margin:14px 0 0;">Your private early-access link (valid for 7 days):<br><a href="${baseUrl}/watches.html?early=${encodeURIComponent(earlyToken)}" style="color:#d4af37;">Open Early Access</a></p>`
+        : '';
+      sendEmail({
+        to: result.email,
+        subject: "You're on the list — Samedi Et Dimanche",
+        html: brandTemplate({
+          baseUrl,
+          heading: "You're on the list.",
+          bodyHtml: `<p style="margin:0;">You're <strong style="color:#d4af37;">#${result.position || '—'}</strong> in line for the drop.</p>
+<p style="margin:14px 0 0;">Want to move up? Share your personal link — every signup moves you up the list:</p>
+<p style="margin:10px 0 0;"><a href="${shareUrl}" style="color:#d4af37;word-break:break-all;">${shareUrl}</a></p>${early}`,
+          ctaText: 'View the Drop',
+          ctaUrl: `${baseUrl}/${waitlistPage}`,
+        }),
+      }).catch(() => {});
+    }
+
     res.json(result);
   } catch (error) {
     console.error('Error adding to waitlist:', error);
@@ -458,33 +343,186 @@ app.post('/api/waitlist', async (req, res) => {
   }
 });
 
+// Referral status: position, total, referral count
+app.get('/api/referral/:code', async (req, res) => {
+  try {
+    const status = await getReferralStatus(req.params.code);
+    if (!status) return res.status(404).json({ error: 'Unknown code' });
+    res.json(status);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch referral status' });
+  }
+});
+
+// Early access: validate a waitlist member's code
+app.get('/api/early-access/:code', async (req, res) => {
+  try {
+    const settings = await getSettings();
+    if (!settings.earlyAccessEnabled) return res.json({ valid: false });
+    const access = verifyEarlyToken(req.params.code);
+    const entry = access ? await findByRefCode(access.code) : null;
+    const valid = Boolean(entry && entry.category === 'watches' && settings.watchPreviewEnabled !== true);
+    res.set('Cache-Control', 'no-store');
+    if (valid) res.cookie('sd_early', req.params.code, { httpOnly: true, sameSite: 'lax', secure: req.secure || req.get('x-forwarded-proto') === 'https', maxAge: Math.max(0, access.expires - Date.now()), path: '/' });
+    res.json({ valid });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to validate code' });
+  }
+});
+
+// ─── Reviews ─────────────────────────────────────────────
+app.get('/api/reviews', async (req, res) => {
+  try {
+    res.json({ data: await getReviews({ approvedOnly: true }) });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch reviews' });
+  }
+});
+
+app.post('/api/reviews', async (req, res) => {
+  try {
+    const result = await addReview(req.body || {});
+    res.json(result);
+  } catch (error) {
+    res.status(400).json({ error: error.message || 'Failed to submit review' });
+  }
+});
+
+app.get('/api/admin/reviews', async (req, res) => {
+  try {
+    res.json({ data: await getReviews({ approvedOnly: false }) });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch reviews' });
+  }
+});
+
+app.put('/api/admin/reviews/:id', async (req, res) => {
+  try {
+    res.json(await setReviewApproval(req.params.id, req.body && req.body.approved));
+  } catch (error) {
+    res.status(400).json({ error: error.message || 'Failed to update review' });
+  }
+});
+
+app.delete('/api/admin/reviews/:id', async (req, res) => {
+  try {
+    res.json(await deleteReview(req.params.id));
+  } catch (error) {
+    res.status(400).json({ error: error.message || 'Failed to delete review' });
+  }
+});
+
+// ─── Admin: orders, analytics, email ─────────────────────
+app.get('/api/admin/abandoned', async (req, res) => {
+  res.json({ data: [], supported: false, emailConfigured: isEmailConfigured() });
+});
+
+app.post('/api/admin/abandoned/send', async (req, res) => {
+  if (!isEmailConfigured()) return res.status(503).json({ error: 'Configure Resend and a verified sender address before sending email.' });
+  try {
+    const emails = Array.isArray(req.body && req.body.emails) ? req.body.emails.slice(0, 100) : [];
+    if (emails.length === 0) return res.status(400).json({ error: 'No emails provided' });
+    const baseUrl = getPublicBaseUrl();
+    let sent = 0; const errors = [];
+    for (const to of emails) {
+      const r = await sendEmail({
+        to,
+        subject: 'Your order is waiting — Samedi Et Dimanche',
+        html: brandTemplate({
+          baseUrl,
+          heading: 'Still thinking it over?',
+          bodyHtml: '<p style="margin:0;">Your selection is still available — but not for long. Pieces are limited and numbered.</p>',
+          ctaText: 'Complete Your Order',
+          ctaUrl: `${baseUrl}/shop.html`,
+        }),
+      });
+      if (r.sent) sent++; else errors.push(`${to}: ${r.error}`);
+    }
+    res.json({ sent, total: emails.length, errors });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to send recovery emails' });
+  }
+});
+
+app.get('/api/admin/analytics', async (req, res) => {
+  try {
+    const days = Math.max(1, Math.min(90, parseInt(req.query.days, 10) || 30));
+    const analytics = await getAnalytics(days);
+    const waitlist = await getWaitlist();
+    const signupsByDay = {};
+    for (const e of waitlist) {
+      const day = e.created_at ? new Date(e.created_at).toISOString().slice(0, 10) : null;
+      if (day) signupsByDay[day] = (signupsByDay[day] || 0) + 1;
+    }
+    res.json({ ...analytics, signupsByDay, totalSignups: waitlist.length });
+  } catch (error) {
+    console.error('Error fetching analytics:', error);
+    res.status(500).json({ error: 'Failed to fetch analytics' });
+  }
+});
+
 app.get('/api/health', (req, res) => {
+  const dbUrl = process.env.DATABASE_URL || process.env.DATABASE_PRIVATE_URL || process.env.POSTGRES_URL || process.env.PG_URL;
   res.json({
     ok: true,
     waitlistStorage: waitlistStorageMode(),
-    stripeEnabled: isStripeConfigured(),
+    paypalEnabled: isPayPalConfigured(),
     adminConfigured: Boolean(process.env.ADMIN_PASSWORD),
+    emailConfigured: isEmailConfigured(),
+    // Railway diagnostics — tells you at a glance which env vars are wired up
+    env: {
+      DATABASE_URL: dbUrl ? 'set' : 'MISSING — waitlist & products use file fallback',
+      ADMIN_PASSWORD: process.env.ADMIN_PASSWORD ? 'set' : 'MISSING — /admin returns 503',
+      EMAIL_DELIVERY: isEmailConfigured() ? 'configured' : 'Resend connection and verified sender required',
+      PUBLIC_URL: process.env.PUBLIC_URL || process.env.RAILWAY_PUBLIC_DOMAIN || '(using auto-detected URL)',
+    },
   });
 });
 
 app.get('/api/site-settings', async (req, res) => {
+  res.set('Cache-Control', 'no-store');
   try {
-    const settings = await getSettings();
-    res.json(settings);
+    const settings = await customerSettings(req);
+    res.json(publicWatchSettings(settings));
   } catch (error) {
     console.error('Error fetching settings:', error);
     res.status(500).json({ error: 'Failed to fetch settings' });
   }
 });
 
+app.get('/api/admin/watch-announcement', async (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  try { res.json({ draft: buildWatchAnnouncement(await getSettings(), { focus: typeof req.query.focus === 'string' ? req.query.focus : '' }) }); }
+  catch { res.status(503).json({ error: 'Current watch settings could not be loaded. Your draft has not changed.' }); }
+});
+app.get('/api/admin/site-settings', async (_req, res) => {
+  res.set('Cache-Control', 'no-store');
+  try { res.json(await getSettings()); }
+  catch { res.status(503).json({ error: 'Settings could not be loaded.' }); }
+});
 app.put('/api/admin/site-settings', async (req, res) => {
+  res.set('Cache-Control', 'no-store');
   try {
+    const before = await getSettings();
     const settings = await updateSettings(req.body || {});
-    res.json(settings);
+    res.json({ ...settings, announcementDrafts: watchAnnouncements(before, settings) });
   } catch (error) {
     console.error('Error updating settings:', error);
     res.status(400).json({ error: error.message || 'Failed to update settings' });
   }
+});
+
+app.post('/api/admin/early-access', async (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  try {
+    const settings = await getSettings();
+    if (!settings.earlyAccessEnabled) return res.status(400).json({error:'Enable member early access in Watch Page settings first.'});
+    const entry = await findByRefCode(req.body?.code);
+    if (!entry || entry.category !== 'watches') return res.status(404).json({error:'Watch member not found.'});
+    const token = createEarlyToken(entry.ref_code);
+    if (!token) return res.status(503).json({error:'Secure access is not configured.'});
+    res.json({url:'/watches.html?early='+encodeURIComponent(token)});
+  } catch { res.status(503).json({error:'Could not create an access link. Please retry.'}); }
 });
 
 app.get('/api/admin/waitlist', async (req, res) => {
@@ -500,11 +538,16 @@ app.get('/api/admin/waitlist', async (req, res) => {
 app.get('/api/bud-menu', budGeoBlock, async (req, res) => {
   try {
     const items = await getActiveBudMenuItems();
-    res.json({ data: items });
+    res.json({ data: items, checkoutEnabled: false });
   } catch (error) {
     console.error('Error fetching bud menu:', error);
     res.status(500).json({ error: 'Failed to fetch menu' });
   }
+});
+
+// This category has no supported payment provider. Keep checkout disabled.
+app.post('/api/bud-checkout', budGeoBlock, async (req, res) => {
+  res.status(503).json({ error: 'Checkout is not available for this category.' });
 });
 
 app.get('/api/admin/bud-menu', async (req, res) => {
@@ -563,12 +606,33 @@ app.delete('/api/admin/bud-menu/:id', async (req, res) => {
   }
 });
 
+app.use(protectPrivateFiles);
 app.use(express.static(ROOT_DIR, {
   extensions: ['html'],
 }));
 
 app.listen(PORT, '0.0.0.0', () => {
+  paymentReliability.start();
   console.log(`Server running on port ${PORT}`);
+
+  // ── Startup configuration check ──────────────────────────────────────────
+  // Logs which critical env vars are present so Railway deploy logs make it
+  // immediately obvious when a variable is missing.
+  const dbUrl = process.env.DATABASE_URL || process.env.DATABASE_PRIVATE_URL || process.env.POSTGRES_URL || process.env.PG_URL;
+  const checks = [
+    { name: 'DATABASE_URL',           ok: Boolean(dbUrl),                             fix: 'Set DATABASE_URL to ${{Postgres.DATABASE_URL}} in the Railway web service variables' },
+    { name: 'ADMIN_PASSWORD',         ok: Boolean(process.env.ADMIN_PASSWORD),         fix: 'Set ADMIN_PASSWORD in Railway web service variables to protect /admin' },
+  ];
+  const missing = checks.filter(c => !c.ok);
+  if (missing.length === 0) {
+    console.log('✓ All critical environment variables are set.');
+  } else {
+    console.warn('⚠️  Missing environment variables — some features are disabled:');
+    for (const { name, fix } of missing) {
+      console.warn(`   ✗ ${name}: ${fix}`);
+    }
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   initBudMenu().catch(err => {
     console.error('Bud menu init error:', err.message);
@@ -577,13 +641,20 @@ app.listen(PORT, '0.0.0.0', () => {
   initSettingsTable().catch(err => {
     console.error('Settings table init error:', err.message);
   });
+  initReviewsTable().catch(err => {
+    console.error('Reviews table init error:', err.message);
+  });
+  initProductsTable().catch(err => {
+    console.error('Products init error:', err.message);
+  });
+
+  initAnalyticsTable().catch(err => {
+    console.error('Analytics init error:', err.message);
+  });
   initWaitlistTable().catch(err => {
     console.error('Waitlist table init error:', err.message);
   });
 
-  initStripe().catch(err => {
-    console.error('Stripe initialization error:', err.message);
-  });
 });
 
 async function initBudMenu() {
@@ -605,36 +676,11 @@ async function initBudMenu() {
   if (seeded) console.log('Bud menu seeded with default items');
 }
 
-async function initStripe() {
-  if (!isStripeConfigured()) {
-    console.log('Stripe not configured — shop runs in "coming soon" mode. Set STRIPE_SECRET_KEY and STRIPE_PUBLISHABLE_KEY to enable it.');
-    return;
-  }
-  const databaseUrl = process.env.DATABASE_URL;
-  if (!databaseUrl) {
-    console.error('DATABASE_URL not set — skipping Stripe schema init');
-    return;
-  }
-
-  console.log('Initializing Stripe schema...');
-  await runMigrations({ databaseUrl, schema: 'stripe' });
-  console.log('Stripe schema ready');
-
-  const stripeSync = await getStripeSync();
-
-  const webhookBaseUrl = getPublicBaseUrl();
-  if (webhookBaseUrl.startsWith('http://localhost')) {
-    console.log('No public URL configured — skipping managed webhook setup (set PUBLIC_URL in production).');
+logPaymentStatus();
+function logPaymentStatus() {
+  if (isPayPalConfigured()) {
+    console.log('PayPal checkout configured. Store and watch preview restrictions remain enforced.');
   } else {
-    console.log('Setting up managed webhook...');
-    const webhookResult = await stripeSync.findOrCreateManagedWebhook(
-      `${webhookBaseUrl}/api/stripe/webhook`
-    );
-    console.log('Webhook configured:', webhookResult?.webhook?.url || 'done');
+    console.log('Payments disabled — shop runs in "coming soon" / waitlist mode.');
   }
-
-  console.log('Syncing Stripe data...');
-  stripeSync.syncBackfill()
-    .then(() => console.log('Stripe data synced'))
-    .catch((err) => console.error('Error syncing Stripe data:', err));
 }

@@ -1,0 +1,13 @@
+#checkout-panel { margin-top:2rem; border-top:1px solid rgba(208,166,127,.3); padding-top:1.5rem; }
+#checkout-panel[hidden] { display:none; }
+#checkout-panel h2 { font:300 1rem Montserrat,sans-serif; letter-spacing:.1em; margin-bottom:1.5rem; }
+.checkout-address { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.checkout-address label { display:flex; flex-direction:column; gap:.5rem; font:400 .75rem/1.5 Montserrat,sans-serif; }
+.checkout-address input,.checkout-address select { box-sizing:border-box; width:100%; min-width:0; border:1px solid #795a52; border-radius:0; background:#201319; color:#f0e4db; padding:.8rem; font:400 16px Montserrat,sans-serif; }
+.checkout-address input:focus,.checkout-address select:focus { outline:2px solid #c99c73; outline-offset:2px; }
+.checkout-address small { color:#c5b6b5; font-size:.65rem; }
+.checkout-address button { grid-column:1/-1; }
+#checkout-summary { margin:1.5rem 0; font:400 .85rem/1.9 Montserrat,sans-serif; }
+#checkout-summary p { display:flex; justify-content:space-between; gap:1rem; }
+#paypal-buttons { max-width:480px; margin:1rem auto; }
+@media(max-width:550px) { .checkout-address { grid-template-columns:1fr; } }

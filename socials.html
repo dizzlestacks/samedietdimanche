@@ -21,8 +21,94 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/index.css">
+  <link rel="canonical" href="https://www.samedietdimanche.com/socials.html">
+
+  <style>
+    /* ── Socials: its own mood — deep wine & rose gold ── */
+    body.socials-page {
+      background:
+        radial-gradient(ellipse at 20% 0%, rgba(120, 35, 60, 0.35), transparent 55%),
+        radial-gradient(ellipse at 85% 90%, rgba(90, 25, 45, 0.30), transparent 55%),
+        linear-gradient(165deg, #1b0a12 0%, #24101a 45%, #140710 100%);
+      background-attachment: fixed;
+    }
+
+    .socials-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: min(480px, 90vw);
+      margin: 0 auto;
+    }
+
+    .social-card {
+      display: flex;
+      align-items: center;
+      gap: 1.2rem;
+      padding: 1.3rem 1.6rem;
+      text-decoration: none;
+      color: #f5ead9;
+      border: 1px solid rgba(219, 160, 122, 0.30);
+      border-radius: 2px;
+      background: rgba(219, 160, 122, 0.05);
+      transition: border-color 0.4s ease, background 0.4s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      opacity: 0;
+      transform: translateY(12px);
+      animation: socialIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      animation-delay: var(--sc-delay, 0.4s);
+    }
+
+    @keyframes socialIn { to { opacity: 1; transform: translateY(0); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .social-card { animation: none; opacity: 1; transform: none; }
+    }
+
+    .social-card:hover {
+      border-color: rgba(219, 160, 122, 0.65);
+      background: rgba(219, 160, 122, 0.10);
+      transform: translateY(-3px);
+    }
+
+    .social-card-text {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      text-align: left;
+      flex: 1;
+    }
+
+    .social-card-label {
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 300;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    .social-card-handle {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 0.95rem;
+      color: #dba07a;
+      opacity: 0.8;
+      letter-spacing: 0.05em;
+    }
+
+    .social-card-arrow {
+      color: #dba07a;
+      font-size: 1rem;
+      opacity: 0.45;
+      transform: translateX(0);
+      transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .social-card:hover .social-card-arrow { opacity: 1; transform: translateX(4px); }
+  </style>
+  <link rel="stylesheet" href="css/site-brand.css?v=34">
 </head>
-<body>
+<body class="socials-page">
 
   <div id="page-transition"></div>
   <div class="noise"></div>
@@ -30,19 +116,27 @@
 
   <main class="main-content">
 
-    <a href="shop.html" class="logo-wrap animate-in" style="--delay: 0s">
+    <a href="index.html" class="logo-wrap animate-in" style="--delay: 0s">
       <img src="img/newlogo.png" alt="Samedi Et Dimanche" class="logo">
       <span class="page-indicator">Socials</span>
     </a>
 
-    <nav class="nav-links animate-in" style="--delay: 0.4s">
-
-      <a href="https://www.instagram.com/samedietdimanche.official" target="_blank" class="nav-item">
-        <span class="nav-label">Instagram</span>
-        <div class="nav-line"></div>
+    <div id="socials-list" class="socials-list animate-in" style="--delay: 0.35s">
+      <a href="https://www.instagram.com/samedietdimanche.ca" target="_blank" rel="noopener" class="social-card" style="--sc-delay:0.45s">
+        <span class="social-card-text">
+          <span class="social-card-label">Instagram</span>
+          <span class="social-card-handle">@samedietdimanche.ca</span>
+        </span>
+        <span class="social-card-arrow" aria-hidden="true">&#8599;</span>
       </a>
-
-    </nav>
+      <a href="https://www.samedietdimanche.ca" target="_blank" rel="noopener" class="social-card" style="--sc-delay:0.57s">
+        <span class="social-card-text">
+          <span class="social-card-label">Website</span>
+          <span class="social-card-handle">samedietdimanche.ca</span>
+        </span>
+        <span class="social-card-arrow" aria-hidden="true">&#8599;</span>
+      </a>
+    </div>
 
   </main>
 
@@ -52,7 +146,39 @@
 
   <script>
     document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Render socials from admin-managed settings (static links above are the fallback)
+    (function () {
+      function render(s) {
+        if (!s || !Array.isArray(s.socialLinks)) return;
+        var list = document.getElementById('socials-list');
+        if (!list) return;
+        var links = s.socialLinks.filter(function (l) { return l && l.enabled !== false && l.url && l.label; });
+        // Settings arrived: they are the source of truth — even an empty
+        // list (admin hid everything) should clear the static fallback.
+        list.innerHTML = '';
+        links.forEach(function (l, i) {
+          var a = document.createElement('a');
+          a.href = l.url;
+          a.className = 'social-card';
+          a.style.setProperty('--sc-delay', (0.1 + i * 0.1) + 's');
+          if (/^https?:\/\//i.test(l.url)) { a.target = '_blank'; a.rel = 'noopener'; }
+          a.innerHTML =
+            '<span class="social-card-text">' +
+              '<span class="social-card-label"></span>' +
+              '<span class="social-card-handle"></span>' +
+            '</span>' +
+            '<span class="social-card-arrow" aria-hidden="true">&#8599;</span>';
+          a.querySelector('.social-card-label').textContent = l.label;
+          a.querySelector('.social-card-handle').textContent = l.sublabel || '';
+          list.appendChild(a);
+        });
+      }
+      if (window.__siteSettings) render(window.__siteSettings);
+      else document.addEventListener('sd:settings', function (e) { render(e.detail); });
+    })();
   </script>
   <script src="js/petals.js"></script>
+  <script src="js/site-extras.js"></script>
 </body>
 </html>

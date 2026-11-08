@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="referrer" content="no-referrer">
+  <title>Payment receipt — Samedi Et Dimanche</title>
+  <meta name="description" content="Your verified payment receipt from Samedi Et Dimanche.">
+  <link rel="icon" href="img/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="css/receipt.css?v=46">
+  <script src="js/receipt.js?v=46" defer></script>
+</head>
+<body>
+  <nav class="receipt-nav" aria-label="Store navigation">
+    <a href="index.html"><img src="img/newlogo.png" width="78" alt="Samedi Et Dimanche — home"></a>
+    <span>A record of your weekend</span>
+  </nav>
+  <main class="receipt-main">
+    <header class="receipt-heading">
+      <p class="eyebrow">Samedi Et Dimanche</p>
+      <h1 id="receipt-heading">Checking your payment.</h1>
+      <p class="receipt-message" id="receipt-message" role="status" aria-live="polite">We’re retrieving your receipt securely. This does not make another payment.</p>
+    </header>
+    <section id="receipt-state" class="receipt-state" aria-label="Receipt verification" aria-busy="true">
+      <div id="receipt-loading" class="loading-lines" aria-hidden="true"><div class="skeleton short"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton short"></div></div>
+      <p id="receipt-error" hidden></p>
+      <button type="button" class="receipt-button" id="receipt-retry" hidden>Check again</button>
+    </section>
+    <section class="printer" id="receipt-printer" aria-label="Verified payment receipt" hidden>
+      <div class="feed-window"><article class="receipt-paper" id="receipt-paper"></article></div>
+    </section>
+    <div class="receipt-actions">
+      <button type="button" id="receipt-print" class="receipt-button" disabled>Print receipt</button>
+      <button type="button" id="receipt-download" class="receipt-button primary" disabled>Download receipt (.html)</button>
+    </div>
+    <p class="action-notice" id="receipt-action-status" role="status" aria-live="polite">Print and download are available after payment verification.</p>
+    <nav class="continue-shopping" aria-label="Continue shopping">
+      <p>Continue your weekend</p>
+      <div class="continue-links"><a href="watches.html">Explore watches</a><a href="shop.html">Browse the shop</a></div>
+    </nav>
+    <noscript><p class="receipt-message">JavaScript is needed to verify this receipt securely. Enable it, then reload this page. You will not be charged again.</p></noscript>
+    <footer class="receipt-footer">Samedi Et Dimanche<br>Keep a little of the weekend.</footer>
+  </main>
+</body>
+</html>

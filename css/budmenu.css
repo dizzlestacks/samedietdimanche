@@ -530,3 +530,22 @@
     padding: 0.4rem 0.7rem;
   }
 }
+
+/* ── Purchase button in strain modal ── */
+.modal-buy {
+  margin-top: 1.2rem;
+  align-self: flex-start;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.5rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: #0d0f0d;
+  background: linear-gradient(135deg, #C9A96E, #b8945a);
+  border: none;
+  padding: 0.85rem 2.2rem;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+.modal-buy:hover { opacity: 0.85; }
+.modal-buy:disabled { opacity: 0.5; cursor: default; }

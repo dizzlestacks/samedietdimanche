@@ -1,0 +1,9 @@
+SAMEDI ET DIMANCHE — UPDATE 58
+
+Extract BOTH ZIPs into the same folder, merging img folders.
+Upload the combined files to your existing Node.js host.
+Keep existing hosting variables/secrets, database and uploaded media.
+Do not replace production data with development data or delete uploads.
+Run npm ci, then restart with npm start (Node 20 or later).
+Original source photos and old watch renders remain in the workspace.
+This package does not contain customer data or secret credentials.

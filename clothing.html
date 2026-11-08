@@ -21,7 +21,11 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/index.css">
-  <link rel="stylesheet" href="css/shop.css">
+  <link rel="stylesheet" href="css/shop.css?v=28">
+  <link rel="stylesheet" href="css/cart.css?v=28">
+  <link rel="stylesheet" href="css/product.css?v=28">
+  <link rel="canonical" href="https://www.samedietdimanche.com/clothing.html">
+  <link rel="stylesheet" href="css/site-brand.css?v=34">
 </head>
 <body>
 
@@ -32,7 +36,7 @@
   <div id="toast" class="toast"></div>
 
   <header class="shop-header animate-in" style="--delay: 0s">
-    <a href="shop.html" class="header-logo-wrap">
+    <a href="index.html" class="header-logo-wrap">
       <img src="img/newlogo.png" alt="Samedi Et Dimanche" class="header-logo">
       <span class="page-indicator">Clothing</span>
     </a>
@@ -50,6 +54,36 @@
         <p class="loading-text">Loading collection...</p>
       </div>
     </div>
+
+    <section id="bundles-section" class="bundles-section" style="display:none">
+      <div class="shop-hero">
+        <h2 class="shop-title" style="font-size:1.6rem;">Bundles</h2>
+        <p class="shop-subtitle">Pieces made to pair — review together in your cart</p>
+      </div>
+      <div id="bundle-grid" class="bundle-grid"></div>
+    </section>
+
+    <section id="reviews-section" class="reviews-section">
+      <div class="shop-hero">
+        <h2 class="shop-title" style="font-size:1.6rem;">From Our Customers</h2>
+      </div>
+      <div id="reviews-grid" class="reviews-grid">
+        <p class="loading-text" style="text-align:center;">Loading...</p>
+      </div>
+      <div class="review-form-wrap">
+        <button id="review-toggle" class="review-toggle">Write a Review</button>
+        <form id="review-form" class="review-form" style="display:none">
+          <input type="text" id="review-name" placeholder="Your name" maxlength="120" required>
+          <div class="review-stars" id="review-stars">
+            <button type="button" data-star="1">★</button><button type="button" data-star="2">★</button><button type="button" data-star="3">★</button><button type="button" data-star="4">★</button><button type="button" data-star="5">★</button>
+          </div>
+          <textarea id="review-text" placeholder="Your review" maxlength="2000" rows="4" required></textarea>
+          <input type="url" id="review-photo" placeholder="Photo link (optional)" maxlength="500">
+          <button type="submit" class="review-submit">Submit Review</button>
+          <p id="review-msg" class="review-msg"></p>
+        </form>
+      </div>
+    </section>
 
   </main>
 
@@ -72,8 +106,8 @@
               <button class="qty-btn" id="qty-plus">+</button>
             </div>
           </div>
-          <button id="buy-btn" class="buy-btn">Purchase</button>
-          <p class="payment-note">Secure checkout via Stripe — card, Apple Pay, Google Pay & more</p>
+          <button id="buy-btn" class="buy-btn" disabled>Add to cart</button>
+          <p class="payment-note">Secure checkout — coming soon</p>
         </div>
       </div>
     </div>
@@ -94,6 +128,10 @@
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
   <script src="js/petals.js"></script>
-  <script src="js/shop.js"></script>
+  <script src="js/shared-cart.js?v=30"></script>
+  <script src="js/cart-nav.js?v=29"></script>
+  <script src="js/shop.js?v=30"></script>
+  <script src="js/site-extras.js"></script>
+  <script src="js/site-cart.js?v=29"></script>
 </body>
 </html>

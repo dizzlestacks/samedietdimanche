@@ -1,0 +1,150 @@
+/* Update16: homepage typography and a quiet, compact watch workbench. */
+.watch-atelier [hidden] { display: none !important; }
+.wa-catalog { padding: 24px 0 52px; }
+.wa-product-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 32px 24px; }
+.wa-product { border-bottom: 1px solid var(--atelier-line); background: transparent; padding: 12px; }
+.wa-product-photo { position: relative; width: min(100%,330px); aspect-ratio: 1000/1333; margin: 0 auto 16px; overflow: hidden; }
+.wa-product-photo .wa-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.wa-product h2 { font: 400 13px/1.6 var(--font-sans); letter-spacing: .16em; text-transform: uppercase; margin: 0 0 6px; }
+.wa-product-price { color: #e7cc9e; font-size: 16px; margin: 14px 0 18px; }
+.wa-product-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+.wa-product-actions button { min-height: 44px; }
+.wa-product .wa-status { min-height: 24px; margin-top: 12px; }
+.wa-catalog-foot { margin: 30px 0 0; max-width: 650px; }
+.wa-workbench-return { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 28px; }
+.wa-base-label { color: #e7cc9e; font-size: 13px; line-height: 1.7; }
+.wa-product-photo[data-error]::after { content: attr(data-error); position: absolute; inset: 0; z-index: 5; display: grid; place-content: center; background: var(--atelier-night); color: #e6d7c6; font-size: 13px; }
+@media (max-width: 767px) { .wa-product-grid { grid-template-columns: 1fr; gap: 22px; } .wa-product { padding: 20px 18px; } .wa-catalog { padding-top: 12px; } }
+/* Retain the existing transactional theme; watch browsing uses the homepage base. */
+body.watch-atelier {
+  --atelier-night: #1b0e14;
+  --atelier-line: rgba(208,166,127,.24);
+  --atelier-muted: #bca8aa;
+  background-color: var(--atelier-night);
+  background-image: radial-gradient(ellipse at 75% 15%, #492331 0%, transparent 52%);
+}
+body.watch-browser {
+  --atelier-line: rgba(196,149,106,.18);
+  font-family: var(--font-sans);
+}
+.watch-atelier .waitlist-page { padding-top: 2rem; justify-content: flex-start; }
+.watch-atelier .wl-logo { display: flex; flex-direction: row; gap: .8rem; margin-bottom: 1.5rem; }
+.watch-atelier .wl-logo .wl-rule, .watch-atelier .wl-logo .wl-tagline { display: none; }
+.watch-atelier #petals, .watch-atelier > .noise { display: none !important; }
+/* The shared logo veil is appended beside body; keep the customizer unobscured. */
+.watch-atelier ~ .sd-veil { display: none !important; }
+.watch-atelier .wl-logo .logo { width: 72px; }
+.wa-experience { width: min(1120px, 100%); }
+.wa-eyebrow { font: 400 .65rem/1.7 var(--font-sans); letter-spacing: .28em; text-transform: uppercase; color: var(--rose-gold); }
+.wa-title { font: 400 16px/1.6 var(--font-sans); letter-spacing: .16em; text-transform: uppercase; margin: .6rem 0; }
+.wa-title em { font-style: normal; font-weight: 400; color: var(--rose-gold-light); }
+.wa-copy { font: 300 .8rem/1.9 var(--font-sans); color: var(--atelier-muted); max-width: 390px; }
+.wa-reference { font: 400 .6rem/1.8 var(--font-sans); letter-spacing: .14em; text-transform: uppercase; color: var(--atelier-muted); margin-top: 1.5rem; }
+.wa-topbar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 1rem; border-bottom: 1px solid var(--atelier-line); }
+.wa-cart-link { color: var(--rose-gold-light); font: 400 .72rem var(--font-sans); text-decoration: none; }
+#wa-cart-badge { display: inline-grid; place-items: center; min-width: 1.7rem; height: 1.7rem; border: 1px solid var(--atelier-line); border-radius: 50%; margin-left: .4rem; }
+.wa-experience button:focus-visible, .wa-experience a:focus-visible, .wa-selector:focus-visible { outline: 1px solid var(--rose-gold-light); outline-offset: 5px; }
+.wa-arrow { border: 1px solid var(--atelier-line); border-radius: 50%; width: 44px; height: 44px; background: transparent; color: var(--rose-gold-light); font: 300 1.4rem 'Cormorant Garamond', serif; cursor: pointer; flex-shrink: 0; }
+.wa-arrow:hover { background: rgba(196,149,106,.1); }
+.wa-drag-hint { text-align: center; font: 300 .65rem/1.8 var(--font-sans); color: var(--atelier-muted); margin: .7rem 0; }
+.wa-scroll-link { color: var(--rose-gold-light); text-decoration: none; border-bottom: 1px solid var(--atelier-line); padding: .8rem 0; display: inline-block; margin-top: 1.5rem; font: 400 .65rem var(--font-sans); letter-spacing: .15em; text-transform: uppercase; }
+.wa-scroll-link span { margin-left: 1.5rem; }
+.wa-customizer { padding: 2rem 0; scroll-margin-top: 2rem; }
+.wa-section-heading { text-align: center; }
+.wa-section-heading .wa-title { font-size: 16px; }
+.wa-section-heading .wa-copy { margin: auto; max-width: 500px; }
+.wa-workbench { display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 6%; margin-top: 2rem; text-align: left; }
+.wa-preview { position: relative; width: 100%; max-width: 255px; aspect-ratio: 1000/1333; margin: auto; }
+.wa-layer { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+.wa-layer-band { z-index: 1; }.wa-layer-case { z-index: 2; }.wa-layer-face { z-index: 3; }
+.wa-preview-caption { text-align: center; font: 300 .65rem/1.8 var(--font-sans); color: var(--atelier-muted); margin: .5rem 0 1rem; }
+.wa-selectors { padding-right: 5%; }
+.wa-selector { padding: 1.75rem 0; border-top: 1px solid var(--atelier-line); touch-action: pan-y; }
+.wa-selector:last-of-type { border-bottom: 1px solid var(--atelier-line); }
+.wa-selector-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .9rem; }
+.wa-selector-label { font: 400 .6rem var(--font-sans); letter-spacing: .24em; text-transform: uppercase; color: var(--rose-gold); }
+.wa-selection-name { font: 400 13px/1.6 var(--font-sans); letter-spacing: .14em; text-transform: uppercase; }
+.wa-swatches { display: flex; flex-wrap: wrap; gap: .65rem; }
+.wa-swatch { width: 29px; height: 29px; border: 4px solid var(--atelier-night); border-radius: 50%; background: var(--swatch); outline: 1px solid #55535a; cursor: pointer; }
+.wa-swatch[aria-pressed="true"] { outline: 2px solid var(--rose-gold-light); }
+.wa-swatch:disabled { cursor: default; }
+.wa-select-row { display: flex; align-items: center; justify-content: space-between; gap: .75rem; }
+.wa-selector-hint { font: 300 .6rem/1.8 var(--font-sans); color: var(--atelier-muted); margin-top: .8rem; }
+.wa-save { width: 100%; padding: 1.1rem; margin-top: 1.6rem; border: 1px solid var(--rose-gold); background: var(--rose-gold); color: #15171e; font: 400 .65rem var(--font-sans); letter-spacing: .18em; text-transform: uppercase; cursor: pointer; }
+.wa-save:hover { background: var(--rose-gold-light); }
+.wa-save:disabled { opacity: .5; cursor: not-allowed; }
+.wa-save-secondary { background: transparent; color: var(--rose-gold-light); margin-top: .65rem; border-color: var(--atelier-line); }
+.wa-save-secondary:hover { background: rgba(208,166,127,.08); }
+.wa-price-breakdown { border-top: 1px solid var(--atelier-line); margin-top: 1.5rem; padding-top: 1rem; font: 400 .72rem/1.8 var(--font-sans); }
+.wa-price-breakdown > div { display: flex; justify-content: space-between; gap: 1rem; padding: .3rem 0; }
+.wa-price-breakdown span { color: var(--atelier-muted); }
+.wa-price-breakdown strong { color: #e4cbb7; font-weight: 400; }
+.wa-price-breakdown strong, .wa-cart-line-total { font-variant-numeric: tabular-nums; }
+.wa-price-breakdown[data-loading="true"] strong { color: transparent; background: rgba(208,166,127,.13); border-radius: 2px; min-width: 5rem; }
+.wa-price-total { border-top: 1px solid var(--atelier-line); margin-top: .5rem; padding-top: .7rem !important; }
+.wa-cart { text-align: left; padding: 2rem clamp(1rem,3vw,2rem); border: 1px solid var(--atelier-line); background: rgba(75,35,48,.22); scroll-margin-top: 1.5rem; }
+.wa-cart h2 { font: 300 2.3rem/1.2 'Cormorant Garamond',serif; }
+.wa-cart-list { list-style: none; margin-top: 1.5rem; }
+.wa-cart-item { display: grid; grid-template-columns: 76px 1fr auto; gap: 1.2rem; align-items: center; padding: 1.2rem 0; border-top: 1px solid var(--atelier-line); }
+.wa-cart-thumb { position: relative; width: 76px; aspect-ratio: 1000/1333; }
+.wa-cart-thumb[data-error]::after { content: attr(data-error); position: absolute; inset: 0; z-index: 4; display: grid; place-items: center; font: 400 .55rem/1.5 var(--font-sans); text-align: center; background: var(--atelier-night); color: var(--atelier-muted); }
+.wa-cart-detail { min-width: 0; }
+.wa-cart-detail > strong { font: 400 1.3rem/1.4 'Cormorant Garamond',serif; }
+.wa-cart-line-total { font: 400 .78rem/1.5 var(--font-sans); color: #e4cbb7; text-align: right; }
+.wa-quantity { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; margin-top: .7rem; }
+.wa-quantity > button:not(.wa-remove), .wa-quantity input { width: 36px; height: 36px; border: 1px solid var(--atelier-line); background: rgba(27,14,20,.5); color: var(--rose-gold-light); font: 400 .75rem var(--font-sans); text-align: center; }
+.wa-quantity button { cursor: pointer; }
+.wa-quantity button:disabled { opacity: .45; cursor: default; }
+.wa-quantity input { width: 48px; appearance: textfield; }
+.wa-quantity input::-webkit-inner-spin-button { appearance: none; }
+.wa-cart-total { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; border-top: 1px solid var(--atelier-line); padding: 1.4rem 0 .8rem; font: 400 .75rem var(--font-sans); }
+.wa-cart-total strong { font: 400 1.8rem 'Cormorant Garamond',serif; }
+.wa-cart-empty { padding: 2rem 0; color: var(--atelier-muted); }
+.wa-cart-empty strong { font: 300 1.6rem 'Cormorant Garamond',serif; color: #e4cbb7; }
+.wa-cart-empty p { font: 300 .73rem/1.9 var(--font-sans); margin-top: .5rem; }
+.wa-cart[aria-busy="true"] .wa-cart-line-total { color: transparent; background: rgba(208,166,127,.13); border-radius: 2px; min-width: 5rem; }
+.wa-notice { font: 300 .68rem/1.9 var(--font-sans); color: var(--atelier-muted); margin-top: .85rem; }
+.wa-status { font: 300 .7rem/1.8 var(--font-sans); color: var(--rose-gold-light); min-height: 1.8em; }
+.wa-image-status { text-align: center; min-height: 2rem; }
+.wa-retry { color: var(--rose-gold-light); font: inherit; background: none; border: 0; border-bottom: 1px solid var(--rose-gold); padding: .2rem; margin-left: .6rem; cursor: pointer; }
+.wa-saved { border-top: 1px solid var(--atelier-line); text-align: left; margin: 3rem 0 4rem; padding-top: 2rem; }
+.wa-saved-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.wa-saved h3 { font: 400 13px/1.6 var(--font-sans); letter-spacing: .14em; text-transform: uppercase; }
+.wa-saved-count { font: 300 .65rem var(--font-sans); color: var(--rose-gold); }
+.wa-saved-list { list-style: none; margin-top: 1.2rem; }
+.wa-saved-item { display: flex; align-items: center; gap: 1.2rem; border-bottom: 1px solid var(--atelier-line); padding: 1rem 0; }
+.wa-saved-thumb { position: relative; width: 58px; aspect-ratio: 1000/1333; flex-shrink: 0; }
+.wa-saved-item-info { flex: 1; }
+.wa-saved-item strong { display: block; font: 400 12px/1.7 var(--font-sans); }
+.wa-saved-item small { font: 300 .65rem/1.8 var(--font-sans); color: var(--atelier-muted); }
+.wa-remove { border: 0; background: none; padding: .8rem; color: var(--rose-gold-light); font: 400 .6rem var(--font-sans); cursor: pointer; }
+.wa-saved-actions { display: flex; flex-direction: column; align-items: flex-end; gap: .15rem; flex-shrink: 0; }
+.wa-restore { border: 1px solid var(--atelier-line); background: rgba(208,166,127,.06); color: var(--rose-gold-light); padding: .65rem .7rem; font: 400 .62rem var(--font-sans); cursor: pointer; }
+.wa-restore:hover { background: rgba(208,166,127,.14); }
+.wa-saved-item-info { min-width: 0; }
+.wa-empty { padding: 2rem 0; font: 300 .75rem/1.9 var(--font-sans); color: var(--atelier-muted); }
+.wa-experience [hidden] { display: none !important; }
+.watch-atelier .wl-cta-sub { font-size: .62rem; line-height: 1.8; }
+.watch-atelier .wl-spec-value { white-space: normal; }
+@media (max-width: 767px) {
+  .watch-atelier .waitlist-page { padding: 1.3rem 1.25rem 1.8rem; }
+  .wa-workbench { grid-template-columns: 1fr; gap: 1rem; }
+  .wa-title { font-size: 16px; }
+  .wa-reference { margin-top: 1rem; }
+  .wa-scroll-link { margin-top: .5rem; }
+  .wa-customizer { padding-top: 1.5rem; }
+  .wa-section-heading .wa-title { font-size: 16px; }
+  .wa-cart-item { grid-template-columns: 58px 1fr; gap: .7rem; }
+  .wa-cart-thumb { width: 58px; }
+  .wa-cart-line-total { grid-column: 2; text-align: left; }
+  .wa-preview { max-width: 180px; }
+  .wa-selectors { padding: 0; }
+  .wa-selector { padding: 1.3rem 0; }
+  .wa-saved { margin-top: 2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .watch-atelier *, .watch-atelier *::before, .watch-atelier *::after { animation: none !important; transition: none !important; }
+  .watch-atelier .animate-in, .watch-atelier .sd-reveal, .watch-atelier .watch-shop-card { opacity: 1; transform: none; }
+  .watch-atelier #petals { display: none; }
+}

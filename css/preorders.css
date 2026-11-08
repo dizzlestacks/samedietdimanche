@@ -1,0 +1,36 @@
+/* Update38 — existing Montserrat settings ledger and category palettes. */
+.preorder-fields { border: 0; padding: 0; margin: 0; min-width: 0; }
+.preorder-fields .form-group { margin: 1rem 0; }
+.preorder-fields :is(input:not([type="checkbox"]),select,textarea) {
+  box-sizing: border-box; width: 100%; min-height: 44px; padding: .7rem .8rem;
+  background: rgba(27,14,20,.4); border: 1px solid rgba(196,149,106,.3);
+  color: #eee0d5; font: 400 .85rem/1.6 'Montserrat',sans-serif;
+}
+.preorder-fields textarea { resize: vertical; min-height: 90px; }
+.preorder-fields option { background: #392530; color: #eee0d5; }
+.preorder-fields input[type="file"] { max-width: 100%; }
+.preorder-fields :disabled { opacity: .5; cursor: not-allowed; }
+.preorder-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .7rem; margin: .8rem 0; }
+.preorder-status { font: 400 .78rem/1.8 'Montserrat',sans-serif; color: #d5c7c1; overflow-wrap: anywhere; margin: .7rem 0; min-height: 1.8em; }
+.preorder-status[data-error="true"] { color: #efaaa0; }
+.preorder-row-errors { font: 400 .78rem/1.8 'Montserrat',sans-serif; color: #efaaa0; padding-left: 1.2rem; max-height: 240px; overflow: auto; }
+.preorder-link-group { border-top: 1px solid rgba(196,149,106,.2); padding-top: 1rem; margin-top: 1.5rem; }
+.wl-cat-shop { border-color: rgba(196,149,106,.5); color: #c4956a; }
+#preorder-notice { box-sizing: border-box; width: 100%; max-width: 860px; margin: .8rem auto 1.2rem; padding: 1rem 1.2rem; border: 1px solid rgba(196,149,106,.3); background: rgba(196,149,106,.07); color: var(--shop-text,var(--off-white,#f0ece4)); font: 400 .78rem/1.9 'Montserrat',sans-serif; text-align: center; overflow-wrap: anywhere; }
+#preorder-notice[hidden], #shop-waitlist[hidden], #shop-grid[hidden] { display: none !important; }
+#preorder-notice p { margin: .35rem 0; }
+.preorder-notice-title { color: var(--shop-accent,var(--rose-gold-light,#e8c4a0)); font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; }
+.preorder-notice-warning { color: #efaaa0; }
+#shop-waitlist { width: 100%; max-width: 480px; margin: 1rem auto 2rem; text-align: center; }
+#shop-waitlist form { max-width: none; margin: 1rem 0; }
+#shop-waitlist label { display: block; text-align: left; font-size: .75rem; color: var(--shop-muted); margin-bottom: .6rem; }
+#shop-waitlist .wl-input-wrap { box-shadow: none; }
+#shop-waitlist .wl-input { font-size: .8rem; letter-spacing: .02em; }
+#shop-waitlist .preorder-status { color: var(--shop-muted); }
+#shop-waitlist .preorder-status[data-error="true"] { color: #efaaa0; }
+#shop-waitlist input:focus-visible { outline: 2px solid var(--shop-accent); outline-offset: -3px; }
+@media(max-width:767px) {
+  .preorder-actions > button { width: 100%; }
+  #shop-waitlist .wl-input-wrap { flex-direction: column; }
+  #shop-waitlist .wl-btn { white-space: normal; }
+}

@@ -1,0 +1,27 @@
+/* Update44: the existing rose-gold atelier, extended into a review workspace. */
+.campaign-workspace{--campaign-line:rgba(208,166,127,.27);--campaign-ink:#e9cbb4;--campaign-surface:#201b26}
+.campaign-workspace fieldset{border:0;margin:0;padding:0;min-width:0}
+.campaign-step{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--rose-gold-light);margin:1.8rem 0 1rem}
+.campaign-theme-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-bottom:1rem}
+.campaign-theme{display:flex;align-items:flex-start;gap:.7rem;padding:.85rem;border:1px solid var(--campaign-line);cursor:pointer;font-size:.72rem;line-height:1.6;min-width:0}
+.campaign-theme:has(input:checked){background:var(--campaign-surface);border-color:var(--campaign-ink)}
+.campaign-theme input{margin-top:.25rem;accent-color:#d0a67f;flex-shrink:0}
+.campaign-theme strong{display:block;font-weight:400;color:var(--campaign-ink)}
+.campaign-theme small{display:block;font-size:.62rem;opacity:.7}
+.campaign-actions{display:flex;flex-wrap:wrap;gap:.65rem;margin:1rem 0}
+.campaign-workspace .form-input{width:100%}
+.campaign-review{border-top:1px solid var(--campaign-line);margin-top:1.5rem;padding-top:.5rem}
+.campaign-frame{display:block;width:100%;height:720px;border:1px solid var(--campaign-line);background:#10151f;margin:1rem 0}
+.campaign-frame[hidden]{display:none}
+.campaign-empty{padding:2rem 1.5rem;border:1px dashed var(--campaign-line);text-align:center;font-size:.75rem;line-height:1.9;color:var(--campaign-ink)}
+.campaign-status{font-size:.72rem;line-height:1.9;white-space:pre-line;overflow-wrap:anywhere;min-height:1.9em}
+.campaign-status.is-error{color:#e8a8a3}
+.campaign-consent{font-size:.72rem;line-height:1.9;display:flex;gap:.7rem;align-items:flex-start;margin:1.2rem 0}
+.campaign-consent input{margin-top:.4rem;accent-color:#d0a67f}
+.campaign-workspace button:disabled{opacity:.4;cursor:not-allowed}
+.campaign-loading{height:5rem;background:var(--campaign-surface);border:1px solid var(--campaign-line)}
+.announcement-tray{position:relative;z-index:4;margin:0 0 1.5rem;padding:1.25rem;border:1px solid rgba(208,166,127,.5);background:#211b25}
+.announcement-tray h2{font-size:.85rem;font-weight:400;color:#e9cbb4;margin:0 0 .7rem}
+.announcement-tray p{font-size:.7rem;line-height:1.9}
+.announcement-option{display:flex;gap:.65rem;font-size:.75rem;line-height:1.8;padding:.5rem 0}
+@media(max-width:767px){.campaign-theme-list{grid-template-columns:1fr}.campaign-frame{height:650px}.campaign-actions .admin-btn{width:100%}}

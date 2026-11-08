@@ -11,11 +11,22 @@ const FALLBACK_MENU = [
 ];
 
 let MENU_ITEMS = [];
+let CHECKOUT_ENABLED = false;
+let MODAL_ITEM = null;
 
 const grid = document.getElementById('menu-grid');
 const modal = document.getElementById('strain-modal');
 const filterBtns = document.querySelectorAll('.filter-btn');
 let currentFilter = 'all';
+
+function safeImageUrl(url) {
+  if (!url || typeof url !== 'string') return '';
+  const t = url.trim();
+  if (/["'<>`\s\\]/.test(t)) return '';
+  if (t.startsWith('https://') || t.startsWith('http://') || (t.startsWith('/') && !t.startsWith('//'))) return t;
+  if (/^[\w][\w\-./]*$/.test(t)) return t; // relative paths like img/bud1.png
+  return '';
+}
 
 function getBadgeClass(strain, category) {
   if (category === 'edible') return 'badge-edible';
@@ -48,20 +59,50 @@ function renderMenu(filter) {
     card.setAttribute('role', 'button');
     card.setAttribute('tabindex', '0');
 
-    card.innerHTML =
-      '<div class="card-image-wrap">' +
-        '<img src="' + (item.image || '') + '" alt="' + item.name + '" class="card-image" onerror="this.style.opacity=\'0.3\'">' +
-        '<span class="card-type-badge ' + badgeClass + '">' + badgeLabel + '</span>' +
-        '<span class="card-thc">THC ' + item.thc + '</span>' +
-      '</div>' +
-      '<div class="card-info">' +
-        '<h3 class="card-name">' + item.name + '</h3>' +
-        '<p class="card-strain">' + item.strain + '</p>' +
-        '<div class="card-bottom">' +
-          '<span class="card-price">' + item.price + '</span>' +
-          '<span class="card-weight">' + item.weight + '</span>' +
-        '</div>' +
-      '</div>';
+    // Build with DOM APIs (not innerHTML) so admin-entered text can never
+    // inject markup or scripts into the public menu.
+    const imageWrap = document.createElement('div');
+    imageWrap.className = 'card-image-wrap';
+    const img = document.createElement('img');
+    img.className = 'card-image';
+    img.alt = item.name || '';
+    img.addEventListener('error', () => { img.style.opacity = '0.3'; });
+    img.src = safeImageUrl(item.image);
+    imageWrap.appendChild(img);
+    const typeBadge = document.createElement('span');
+    typeBadge.className = 'card-type-badge ' + badgeClass;
+    typeBadge.textContent = badgeLabel;
+    imageWrap.appendChild(typeBadge);
+    if (item.thc) {
+      const thc = document.createElement('span');
+      thc.className = 'card-thc';
+      thc.textContent = 'THC ' + item.thc;
+      imageWrap.appendChild(thc);
+    }
+    card.appendChild(imageWrap);
+
+    const info = document.createElement('div');
+    info.className = 'card-info';
+    const nameEl = document.createElement('h3');
+    nameEl.className = 'card-name';
+    nameEl.textContent = item.name || '';
+    info.appendChild(nameEl);
+    const strainEl = document.createElement('p');
+    strainEl.className = 'card-strain';
+    strainEl.textContent = item.strain || '';
+    info.appendChild(strainEl);
+    const bottom = document.createElement('div');
+    bottom.className = 'card-bottom';
+    const priceEl = document.createElement('span');
+    priceEl.className = 'card-price';
+    priceEl.textContent = item.price || '';
+    bottom.appendChild(priceEl);
+    const weightEl = document.createElement('span');
+    weightEl.className = 'card-weight';
+    weightEl.textContent = item.weight || '';
+    bottom.appendChild(weightEl);
+    info.appendChild(bottom);
+    card.appendChild(info);
 
     card.addEventListener('click', () => openModal(item));
     card.addEventListener('keydown', (e) => {
@@ -80,7 +121,7 @@ function openModal(item) {
   const badgeClass = getBadgeClass(item.strain, item.category);
   const badgeLabel = getBadgeLabel(item.strain, item.category);
 
-  document.getElementById('modal-image').src = item.image || '';
+  document.getElementById('modal-image').src = safeImageUrl(item.image);
   document.getElementById('modal-image').alt = item.name;
   document.getElementById('modal-name').textContent = item.name;
   document.getElementById('modal-strain').textContent = item.strain;
@@ -89,6 +130,14 @@ function openModal(item) {
   document.getElementById('modal-cbd').textContent = item.cbd;
   document.getElementById('modal-terpenes').textContent = item.terpenes;
   document.getElementById('modal-price').textContent = item.price;
+
+  MODAL_ITEM = item;
+  const buyBtn = document.getElementById('modal-buy');
+  if (buyBtn) {
+    buyBtn.style.display = (CHECKOUT_ENABLED && item.id) ? '' : 'none';
+    buyBtn.disabled = false;
+    buyBtn.textContent = 'Purchase';
+  }
 
   const badge = document.getElementById('modal-type-badge');
   badge.textContent = badgeLabel;
@@ -112,6 +161,26 @@ function closeModal() {
   modal.classList.remove('modal-active');
   setTimeout(() => { modal.style.display = 'none'; }, 300);
   document.body.style.overflow = '';
+}
+
+const modalBuyBtn = document.getElementById('modal-buy');
+if (modalBuyBtn) {
+  modalBuyBtn.addEventListener('click', async () => {
+    if (!MODAL_ITEM || !MODAL_ITEM.id) return;
+    modalBuyBtn.disabled = true;
+    modalBuyBtn.textContent = '...';
+    try {
+      const res = await fetch('/api/bud-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ itemId: MODAL_ITEM.id, quantity: 1 }),
+      });
+      const data = await res.json();
+      if (data && data.url) { window.location.href = data.url; return; }
+    } catch (e) { /* fall through */ }
+    modalBuyBtn.disabled = false;
+    modalBuyBtn.textContent = 'Purchase';
+  });
 }
 
 document.getElementById('modal-close').addEventListener('click', closeModal);
@@ -138,6 +207,7 @@ async function loadMenu() {
     if (!res.ok) throw new Error('API returned ' + res.status);
     const data = await res.json();
     MENU_ITEMS = data.data || [];
+    CHECKOUT_ENABLED = data.checkoutEnabled === true;
     if (MENU_ITEMS.length === 0) MENU_ITEMS = FALLBACK_MENU;
   } catch (err) {
     console.warn('API unavailable, using local fallback menu:', err.message);

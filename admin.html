@@ -11,10 +11,13 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/index.css">
-  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/admin.css?v=30">
+  <link rel="stylesheet" href="css/site-brand.css?v=34">
+  <link rel="stylesheet" href="css/preorders.css?v=38">
+  <link rel="stylesheet" href="css/admin-marketing.css?v=44">
 </head>
 <body>
 
@@ -29,6 +32,12 @@
   </header>
 
   <main class="admin-content">
+    <section id="announcement-tray" class="announcement-tray" aria-label="Saved setting announcements" hidden>
+      <h2>Settings saved. Would you like to share the update?</h2>
+      <p>Select a suggested announcement to review in Marketing. Nothing is sent by saving settings. Private invitations remain a separate flow.</p>
+      <div id="announcement-options"></div>
+      <div class="campaign-actions"><button type="button" id="announcement-review" class="admin-btn admin-btn-primary">Review selected draft</button><button type="button" id="announcement-dismiss" class="admin-btn">Dismiss suggestions</button></div>
+    </section>
 
     <div class="admin-tabs">
       <button class="tab-btn active" data-tab="overview">Overview</button>
@@ -36,46 +45,61 @@
       <button class="tab-btn" data-tab="bud">Bud Menu</button>
       <button class="tab-btn" data-tab="waitlist">Waitlist</button>
       <button class="tab-btn" data-tab="watchpage">Watch Page</button>
+      <button class="tab-btn" data-tab="orders">Orders</button>
+      <button class="tab-btn" data-tab="reviews">Reviews</button>
+      <button class="tab-btn" data-tab="homepage">Homepage</button>
+      <button class="tab-btn" data-tab="socials">Socials</button>
+      <button class="tab-btn" data-tab="marketing">Marketing</button>
+      <button class="tab-btn" data-tab="sitesettings">Settings</button>
     </div>
 
     <div id="tab-overview" class="tab-panel active">
       <div class="admin-toolbar">
         <h1 class="admin-title">Overview</h1>
         <div class="quick-actions">
-          <button class="admin-btn" data-jump="shop">Manage Products</button>
-          <button class="admin-btn" data-jump="bud">Manage Bud Menu</button>
+          <button class="admin-btn" data-jump="shop">Products</button>
+          <button class="admin-btn" data-jump="bud">Bud Menu</button>
+          <button class="admin-btn" data-jump="waitlist">Waitlist</button>
+          <button class="admin-btn" data-jump="orders">Orders</button>
+          <button class="admin-btn" data-jump="reviews">Reviews</button>
         </div>
       </div>
       <div class="stat-grid" id="dashboard-stats">
         <div class="stat-card">
           <span class="stat-value" id="stat-wl-total">—</span>
-          <span class="stat-label">Waitlist Total</span>
+          <span class="stat-label">Waitlist Signups</span>
+          <span class="stat-sub" id="stat-wl-breakdown"></span>
         </div>
         <div class="stat-card">
-          <span class="stat-value" id="stat-wl-watches">—</span>
-          <span class="stat-label">Watches Signups</span>
+          <span class="stat-value" id="stat-orders">—</span>
+          <span class="stat-label">Orders</span>
+          <span class="stat-sub" id="stat-orders-sub"></span>
         </div>
         <div class="stat-card">
-          <span class="stat-value" id="stat-wl-bud">—</span>
-          <span class="stat-label">Bud Signups</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="stat-products">—</span>
-          <span class="stat-label">Active Products</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value" id="stat-bud-items">—</span>
-          <span class="stat-label">Bud Menu Items</span>
+          <span class="stat-value" id="stat-reviews-pending">—</span>
+          <span class="stat-label">Reviews Awaiting Approval</span>
+          <span class="stat-sub" id="stat-reviews-sub"></span>
         </div>
       </div>
       <div class="dashboard-section">
         <div class="dashboard-section-header">
-          <span class="dashboard-section-label">Recent Signups</span>
-          <button class="admin-btn" data-jump="waitlist">View All</button>
+          <span class="dashboard-section-label">Traffic — last 30 days</span>
         </div>
-        <div id="dashboard-recent" class="dashboard-recent">
-          <p class="loading-text">Loading...</p>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <span class="stat-value" id="stat-views">—</span>
+            <span class="stat-label">Page Views</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-views-today">—</span>
+            <span class="stat-label">Views Today</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-value" id="stat-signups-30">—</span>
+            <span class="stat-label">Signups (30d)</span>
+          </div>
         </div>
+        <div id="analytics-paths" class="dashboard-recent"></div>
       </div>
     </div>
 
@@ -87,6 +111,17 @@
           <button id="add-btn" class="admin-btn admin-btn-primary">+ Add Product</button>
         </div>
       </div>
+      <details class="dashboard-section wp-collapse" open>
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Shop Page Mode</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <label class="wp-mode-option">
+          <input type="checkbox" id="shop-open-toggle">
+          <span>Shop open — visitors can browse and buy. Turn off to show "Collection coming soon" instead.</span>
+        </label>
+        <p class="settings-hint">This switch saves immediately. Product edits use the Save button in the product dialog.</p>
+      </details>
       <div id="product-list" class="product-list">
         <p class="loading-text">Loading products...</p>
       </div>
@@ -100,6 +135,17 @@
           <button id="bud-add-btn" class="admin-btn admin-btn-primary">+ Add Item</button>
         </div>
       </div>
+      <details class="dashboard-section wp-collapse" open>
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Bud Page Mode</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <label class="wp-mode-option">
+          <input type="checkbox" id="bud-waitlist-toggle">
+          <span>Waitlist mode — collect emails. Turn off to show the menu items below directly on the bud page.</span>
+        </label>
+        <p class="settings-hint">This switch saves immediately. Menu edits use the Save button in the item dialog.</p>
+      </details>
       <div id="bud-list" class="product-list">
         <p class="loading-text">Loading menu items...</p>
       </div>
@@ -117,7 +163,47 @@
         <button class="waitlist-filter-btn active" data-filter="all">All</button>
         <button class="waitlist-filter-btn" data-filter="bud">Bud</button>
         <button class="waitlist-filter-btn" data-filter="watches">Watches</button>
+        <button class="waitlist-filter-btn" data-filter="shop">Shop</button>
       </div>
+      <details class="dashboard-section wp-collapse">
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Import waitlist · CSV</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <p class="settings-hint">Upload a .csv file up to 100 KB with an email header. An optional category column supports watches, shop or bud; otherwise the default category below is used. Importing does not send emails.</p>
+        <form id="waitlist-import-form">
+          <fieldset class="preorder-fields" id="waitlist-import-fields">
+            <div class="form-group"><label for="waitlist-import-file">CSV file</label><input id="waitlist-import-file" type="file" accept=".csv,text/csv" required></div>
+            <div class="form-group"><label for="waitlist-import-category">Default category</label><select id="waitlist-import-category"><option value="watches">Watches</option><option value="shop">Shop</option><option value="bud">Bud</option></select></div>
+            <label class="wp-mode-option"><input type="checkbox" id="waitlist-import-consent" required><span>I have permission to add these email addresses to the waitlist. Only import emails with permission.</span></label>
+            <div class="preorder-actions"><button type="submit" class="admin-btn admin-btn-primary">Import CSV</button></div>
+          </fieldset>
+        </form>
+        <p id="waitlist-import-status" class="preorder-status" role="status" aria-live="polite"></p>
+        <ul id="waitlist-import-errors" class="preorder-row-errors"></ul>
+      </details>
+      <details class="dashboard-section wp-collapse" id="preorder-invitations">
+        <summary class="dashboard-section-header wp-collapse-summary"><span class="dashboard-section-label">Send private preorder invitations · Update 39</span><span class="wp-collapse-caret" aria-hidden="true">▾</span></summary>
+        <p class="settings-hint">Select up to 50 members, then review before sending. Only recorded signup consent qualifies. Imported or older contacts without recorded consent must sign up themselves first. Importing never sends an invitation.</p>
+        <form id="invite-form">
+          <fieldset class="preorder-fields" id="invite-fields">
+            <div class="form-group"><label for="invite-category">Invitation category</label><select id="invite-category"><option value="watches">Watches</option><option value="shop">Shop</option></select></div>
+            <div class="form-group"><label for="invite-expiry">Private link expires · local time</label><input type="datetime-local" id="invite-expiry" required></div>
+            <button type="button" id="invite-reload" class="admin-btn">Reload recipients</button>
+            <div id="invite-members" class="preorder-row-errors"></div>
+            <button type="submit" id="invite-review" class="admin-btn admin-btn-primary" disabled>Review selected recipients</button>
+          </fieldset>
+        </form>
+        <section id="invite-confirmation" aria-label="Confirm preorder invitations" hidden>
+          <p id="invite-summary" class="settings-hint"></p>
+          <ul id="invite-recipients" class="preorder-row-errors"></ul>
+          <p class="settings-hint">Each person receives a separate email. Full payment is required upfront. Provider acceptance does not guarantee inbox delivery.</p>
+          <button type="button" id="invite-send" class="admin-btn admin-btn-primary">Confirm and send invitations</button>
+          <button type="button" id="invite-cancel" class="admin-btn">Cancel review</button>
+        </section>
+        <p id="invite-status" class="preorder-status" role="status" aria-live="polite"></p>
+        <ul id="invite-results" class="preorder-row-errors"></ul>
+      </details>
       <div id="waitlist-list" class="waitlist-list">
         <p class="loading-text">Loading waitlist...</p>
       </div>
@@ -138,28 +224,78 @@
           <button id="wp-save-btn" class="admin-btn admin-btn-primary">Save Changes</button>
         </div>
       </div>
+      <p class="settings-intro">Choose what visitors see, then save your Watch Page changes. Pricing has its own Save watch pricing button. Email signup controls live in Settings and use Save Settings.</p>
+      <details class="dashboard-section wp-collapse" open>
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label" id="wp-pricing-title">Watch models &amp; change fees · CAD</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <p class="settings-hint">Five original model prices, plus one face-change fee and one band-change fee. Fees apply once when a selection differs from its original model; reverting removes that fee. Blank bases are unavailable. Blank fees only disable combinations requiring that change. Zero is valid; maximum CAD $10,000 per field. Legacy component data is retained but superseded. Saving prices does not enable checkout or change watch mode.</p>
+        <form id="wp-component-pricing">
+          <div id="wp-price-inputs" class="wp-price-grid"></div>
+          <div class="form-actions">
+            <button type="button" class="admin-btn" id="wp-price-reload">Reload prices</button>
+            <button type="submit" class="admin-btn admin-btn-primary" id="wp-price-save" disabled>Save watch pricing</button>
+          </div>
+          <p id="wp-price-status" class="settings-hint" role="status">Loading watch pricing…</p>
+        </form>
+      </details>
 
-      <div class="dashboard-section">
-        <div class="dashboard-section-header">
-          <span class="dashboard-section-label">Page Mode</span>
-        </div>
+      <details class="dashboard-section wp-collapse" open>
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Visitor access · mode &amp; overrides</span>
+          <span class="wp-collapse-caret">▾</span>
+        </summary>
+        <h3 class="settings-group-title">1. Default page mode</h3>
+        <p class="settings-hint">This is the public watch experience when preview override is off. Shop and Pre-order allow PayPal checkout for available watches; preview keeps public checkout disabled.</p>
         <div class="wp-mode-row">
           <label class="wp-mode-option">
             <input type="radio" name="wp-mode" value="waitlist">
-            <span>Waitlist — visitors join the email list</span>
+            <span>Waitlist — show the signup page. The email form is available only when Watch email signup is enabled in Settings.</span>
           </label>
           <label class="wp-mode-option">
             <input type="radio" name="wp-mode" value="shop">
-            <span>Shop — visitors see products and can buy</span>
+            <span>Shop — visitors can browse, customize and buy available watches through PayPal</span>
+          </label>
+          <label class="wp-mode-option">
+            <input type="radio" name="wp-mode" value="preorder">
+            <span>Pre-order — everyone can preorder available watches, paid in full through PayPal</span>
           </label>
         </div>
-        <p class="loading-text" id="wp-mode-note" style="display:none"></p>
-      </div>
-
-      <div class="dashboard-section">
-        <div class="dashboard-section-header">
-          <span class="dashboard-section-label">Headline &amp; Subtitle</span>
+        <div class="form-group">
+          <label for="wp-preorder-note">Pre-order shipping estimate</label>
+          <textarea id="wp-preorder-note" class="form-input form-textarea" rows="3" maxlength="300" placeholder="Expected to ship ..." aria-describedby="wp-preorder-help"></textarea>
         </div>
+        <p class="settings-hint" id="wp-preorder-help">Required for Pre-order mode. Shown on the watch page, in the cart and before payment. This is the shared shipping estimate also used by private preorder links.</p>
+        <p class="loading-text" id="wp-mode-note" style="display:none"></p>
+        <div class="settings-group">
+          <h3 class="settings-group-title">2. Preview override</h3>
+          <label class="wp-mode-option"><input type="checkbox" id="wp-preview-enabled" aria-describedby="wp-preview-help"> <span>Enable price-free watch preview</span></label>
+          <p class="settings-hint" id="wp-preview-help">Shows watches without prices, regardless of the selected mode. Visitors can browse, favorite, save customizations and save watches to their cart. Enabled countdown and waitlist signup appear together above the watches. Public checkout and member early-access purchases stay disabled. Only valid private preorder link holders can bypass this preview when private watch preorders are enabled in Settings. Turn off to restore the selected mode and saved prices; pricing is never erased.</p>
+        </div>
+        <div class="settings-group">
+          <h3 class="settings-group-title">3. Email signup availability</h3>
+          <p class="settings-hint">Price-free preview always includes email signup so visitors can register their interest while customizing. Outside preview, the email signup setting controls the form. It never enables checkout.</p>
+          <button type="button" class="admin-btn" data-jump="sitesettings">Manage email signup in Settings</button>
+        </div>
+        <div class="settings-group">
+          <h3 class="settings-group-title">4. Member early access</h3>
+          <label class="wp-mode-option"><input type="checkbox" id="wp-early-access" aria-describedby="wp-early-access-help"> <span>Enable private-link early access</span></label>
+          <p class="settings-hint" id="wp-early-access-help">Members with a valid early-access link can browse and buy while the public page stays on the waitlist. Preview mode still blocks member early-access purchases. Private preorders are separate and managed in Settings. New signups receive a 7-day early-access link on screen. Use Get private link in the Waitlist tab to send a member a link manually; automated emails require email delivery setup. This switch does not open the public shop or turn email signup on.</p>
+        </div>
+        <div class="settings-group">
+          <h3 class="settings-group-title">5. Women's section</h3>
+          <label class="wp-mode-option"><input type="checkbox" id="wp-womens-enabled" aria-describedby="wp-womens-help" disabled> <span>Show the Women's watch collection</span></label>
+          <p class="settings-hint" id="wp-womens-help">Adds a Men's / Women's choice when visitors can browse watches. The Women's section is currently empty. This does not open the catalog in waitlist mode. Turn off to hide Women's and return visitors to Men's.</p>
+        </div>
+        <p class="settings-hint">Apply mode, preview, early-access and Women's section changes with Save Changes at the top of this tab.</p>
+      </details>
+
+      <details class="dashboard-section wp-collapse">
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Headline &amp; Subtitle</span>
+          <span class="wp-collapse-caret">▾</span>
+        </summary>
         <div class="form-group">
           <label for="wp-headline">Headline</label>
           <input type="text" id="wp-headline" maxlength="200">
@@ -168,15 +304,314 @@
           <label for="wp-sub">Subtitle</label>
           <input type="text" id="wp-sub" maxlength="300">
         </div>
-      </div>
+      </details>
 
-      <div class="dashboard-section">
-        <div class="dashboard-section-header">
+      <details class="dashboard-section wp-collapse">
+        <summary class="dashboard-section-header wp-collapse-summary">
           <span class="dashboard-section-label">The Details (specs)</span>
-          <button id="wp-add-spec-btn" class="admin-btn">+ Add Row</button>
+          <span class="wp-collapse-caret">▾</span>
+        </summary>
+        <div class="wp-collapse-toolbar">
+          <button id="wp-add-spec-btn" class="admin-btn" type="button">+ Add Row</button>
         </div>
         <div id="wp-specs-list"></div>
+      </details>
+
+      <details class="dashboard-section wp-collapse">
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Drop countdown &amp; edition counter</span>
+          <span class="wp-collapse-caret">▾</span>
+        </summary>
+        <label class="wp-mode-option"><input type="checkbox" id="wp-countdown-enabled" aria-describedby="wp-countdown-help"> <span>Show countdown on the watch page</span></label>
+        <p class="settings-hint" id="wp-countdown-help">Requires a future drop date. Turn off to hide the clock without clearing its date or title. The countdown is informational: reaching zero does not automatically open the shop or change the selected page mode.</p>
+        <div class="form-group">
+          <label for="wp-drop-date">Drop date &amp; time · your local timezone</label>
+          <input type="datetime-local" id="wp-drop-date" aria-describedby="wp-drop-date-help">
+          <p class="settings-hint" id="wp-drop-date-help">The picker uses this device’s local timezone. Saving converts the selected time to UTC, so every visitor counts down to the same moment. Leave empty for no countdown.</p>
+          <label for="wp-drop-title" style="margin-top:0.6rem">Countdown title (shown above the clock)</label>
+          <input type="text" id="wp-drop-title" maxlength="80" placeholder="The Drop">
+        </div>
+        <div class="wp-inline-row">
+          <div class="form-group">
+            <label for="wp-edition-total">Edition size (0 = hide counter)</label>
+            <input type="number" id="wp-edition-total" min="0" max="100000">
+          </div>
+          <div class="form-group">
+            <label for="wp-edition-claimed">Pieces claimed</label>
+            <input type="number" id="wp-edition-claimed" min="0" max="100000">
+          </div>
+        </div>
+      </details>
+
+    </div>
+
+    <div id="tab-orders" class="tab-panel" style="display:none">
+      <div class="admin-toolbar">
+        <h1 class="admin-title">Orders</h1>
+        <span id="orders-revenue" class="waitlist-count"></span>
       </div>
+      <div id="orders-list" class="waitlist-list">
+        <p class="loading-text">Loading orders...</p>
+      </div>
+      <div class="dashboard-section">
+        <div class="dashboard-section-header">
+          <span class="dashboard-section-label">Abandoned checkouts</span>
+          <button id="abandoned-send-btn" class="admin-btn admin-btn-primary">Send Recovery Emails</button>
+        </div>
+        <div id="payment-reliability-status" class="loading-text" role="status"></div>
+        <div id="abandoned-list" class="waitlist-list">
+          <p class="loading-text">Loading...</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="tab-reviews" class="tab-panel" style="display:none">
+      <div class="admin-toolbar">
+        <h1 class="admin-title">Reviews</h1>
+      </div>
+      <div id="admin-reviews-list" class="waitlist-list">
+        <p class="loading-text">Loading reviews...</p>
+      </div>
+    </div>
+
+    <div id="tab-homepage" class="tab-panel" style="display:none">
+      <div class="admin-toolbar">
+        <h1 class="admin-title">Homepage Links</h1>
+        <div class="toolbar-actions">
+          <button id="hl-save-btn" class="admin-btn admin-btn-primary">Save Links</button>
+        </div>
+      </div>
+      <p class="settings-intro">Configure homepage navigation below. Apply changes with Save Links at the top of this tab.</p>
+      <details class="dashboard-section wp-collapse" open>
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Homepage navigation · links &amp; visibility</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <p class="settings-hint">Edit the name, subtitle and URL inline; use the arrows to reorder, the switch to show/hide, and &times; to delete. Changes appear on next page load after saving.</p>
+        <div class="wp-collapse-toolbar">
+          <button id="hl-add-btn" class="admin-btn" type="button">+ Add Link</button>
+        </div>
+        <div id="hl-list" class="waitlist-list">
+          <p class="loading-text">Loading links...</p>
+        </div>
+      </details>
+    </div>
+
+    <div id="tab-socials" class="tab-panel" style="display:none">
+      <div class="admin-toolbar">
+        <h1 class="admin-title">Socials Page</h1>
+        <div class="toolbar-actions">
+          <button id="sl-save-btn" class="admin-btn admin-btn-primary">Save Socials</button>
+        </div>
+      </div>
+      <p class="settings-intro">Configure your Socials page below. Apply changes with Save Socials at the top of this tab.</p>
+      <details class="dashboard-section wp-collapse" open>
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Social links · handles &amp; visibility</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <p class="settings-hint">Edit the name, handle and URL inline; use the arrows to reorder, the switch to show/hide, and &times; to delete.</p>
+        <div class="wp-collapse-toolbar">
+          <button id="sl-add-btn" class="admin-btn" type="button">+ Add Social</button>
+        </div>
+        <div id="sl-list" class="waitlist-list">
+          <p class="loading-text">Loading socials...</p>
+        </div>
+      </details>
+    </div>
+
+    <div id="tab-sitesettings" class="tab-panel" style="display:none">
+      <div class="admin-toolbar">
+        <h1 class="admin-title">Site Settings</h1>
+      </div>
+      <details class="dashboard-section wp-collapse" id="private-preorders">
+        <summary class="dashboard-section-header wp-collapse-summary"><span class="dashboard-section-label">Private preorders</span><span class="wp-collapse-caret" aria-hidden="true">▾</span></summary>
+        <p class="settings-hint">Private preorders require full payment upfront through PayPal. Only holders of a valid private preorder link can bypass the public waitlist and hidden-price preview. These settings do not open the public collection.</p>
+        <form id="preorder-settings-form">
+          <fieldset class="preorder-fields" id="preorder-settings-fields" disabled>
+            <label class="wp-mode-option"><input type="checkbox" id="preorder-watches-enabled"><span>Enable private watch preorders</span></label>
+            <label class="wp-mode-option"><input type="checkbox" id="preorder-shop-enabled"><span>Enable private shop preorders</span></label>
+            <label class="wp-mode-option"><input type="checkbox" id="shop-waitlist-enabled"><span>Show the public shop email waitlist instead of products. Valid shop preorder link holders can still browse.</span></label>
+            <div class="form-group"><label for="preorder-fulfillment-note">Shipping estimate · required when either preorder category is enabled</label><textarea id="preorder-fulfillment-note" maxlength="300" placeholder="Expected to ship ..." aria-describedby="preorder-note-help"></textarea><p id="preorder-note-help" class="settings-hint">Up to 300 characters. This exact estimate appears with the preorder disclosure. Save it before sharing links.</p></div>
+            <div class="preorder-actions"><button type="submit" class="admin-btn admin-btn-primary">Save preorder settings</button></div>
+          </fieldset>
+        </form>
+        <div class="preorder-actions"><button type="button" id="preorder-settings-reload" class="admin-btn">Reload preorder settings</button></div>
+        <p id="preorder-settings-status" class="preorder-status" role="status" aria-live="polite">Open this section to load preorder settings.</p>
+        <div class="preorder-link-group">
+          <h3 class="settings-group-title">Generate a private link</h3>
+          <p class="settings-hint">Use the published admin to generate and share links with live customers. Links use this admin’s origin; links from a preview are not live customer links. Expiry uses this device’s timezone, defaults to 7 days and cannot exceed 30 days. Enabling a category and saving settings is separate from creating a link.</p>
+          <form id="preorder-link-form">
+            <fieldset class="preorder-fields" id="preorder-link-fields">
+              <div class="form-group"><label for="preorder-link-category">Category · applies to creation and revocation</label><select id="preorder-link-category"><option value="watches">Watches</option><option value="shop">Shop</option></select></div>
+              <div class="form-group"><label for="preorder-link-expiry">Expires at · local time</label><input type="datetime-local" id="preorder-link-expiry" required></div>
+              <div class="preorder-actions"><button type="submit" class="admin-btn admin-btn-primary">Create private link</button><button type="button" id="preorder-link-revoke" class="admin-btn">Revoke all category links</button></div>
+              <div class="form-group"><label for="preorder-link-output">Generated URL</label><input id="preorder-link-output" type="text" readonly></div>
+              <div class="preorder-actions"><button type="button" id="preorder-link-copy" class="admin-btn" disabled>Copy link</button></div>
+            </fieldset>
+          </form>
+          <p id="preorder-link-status" class="preorder-status" role="status" aria-live="polite"></p>
+        </div>
+      </details>
+      <details class="dashboard-section wp-collapse" open>
+        <summary class="dashboard-section-header wp-collapse-summary"><span class="dashboard-section-label">Checkout taxes</span></summary>
+        <div class="form-group">
+          <label class="wp-mode-option" for="ss-sales-tax-enabled"><input type="checkbox" id="ss-sales-tax-enabled" checked> <span>Charge sales tax</span></label>
+          <p class="settings-hint">On: add applicable Canadian GST/HST at checkout for watches and clothing. Off: no sales tax is added. Free worldwide shipping stays unchanged. Save Settings below to apply.</p>
+          <p class="settings-hint">Only disable tax collection when appropriate for your business’s tax obligations. Checkouts awaiting payment must be reviewed again if their tax total changes; completed orders keep their original totals.</p>
+        </div>
+      </details>
+      <p class="settings-intro">These controls manage site-wide visibility and email signup availability. Use Save Settings below to apply changes; the Bud homepage visibility switch saves immediately. Watch browsing mode, preview override and private-link early access are managed separately in Watch Page.</p>
+
+      <details class="dashboard-section wp-collapse" open>
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Announcement bar — shows at the top of every page</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <div class="form-group">
+          <label class="wp-mode-option"><input type="checkbox" id="wp-announce-enabled"> <span>Show announcement bar on every page</span></label>
+          <label for="wp-announce-text">Announcement text</label>
+          <input type="text" id="wp-announce-text" maxlength="300" placeholder="Announcement text (e.g. First drop — June 2027)">
+        </div>
+        <p class="settings-hint">Turning the bar off keeps its text. Apply changes with Save Settings below.</p>
+      </details>
+      <details class="dashboard-section wp-collapse">
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Homepage links — managed from the Homepage tab</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <div class="form-group">
+          <button type="button" class="admin-btn" data-jump="homepage">Open Homepage Links</button>
+        </div>
+        <p class="settings-hint">Navigation links have their own Save Links button in the Homepage tab.</p>
+      </details>
+      <details class="dashboard-section wp-collapse">
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Waitlist — Bud page</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <div class="form-group">
+          <label class="wp-mode-option"><input type="checkbox" id="ws-show-bud"> <span>Show Bud on the homepage (off = hide the Bud link entirely)</span></label>
+          <label class="wp-mode-option"><input type="checkbox" id="ws-bud-enabled"> <span>Waitlist open on the Bud page (off = hide form and close signups)</span></label>
+          <label for="ws-bud-headline">Headline</label>
+          <input type="text" id="ws-bud-headline" maxlength="200">
+          <label for="ws-bud-sub" style="margin-top:0.6rem">Subtitle</label>
+          <input type="text" id="ws-bud-sub" maxlength="300">
+          <label for="ws-bud-button" style="margin-top:0.6rem">Button text</label>
+          <input type="text" id="ws-bud-button" maxlength="60">
+        </div>
+        <p class="settings-hint">Bud homepage visibility saves immediately. Apply waitlist availability and signup copy with Save Settings below. The same waitlist availability switch is also available in Bud Menu, where changes save immediately.</p>
+      </details>
+      <details class="dashboard-section wp-collapse">
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Watches · email signup &amp; waitlist copy</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <div class="form-group">
+          <label class="wp-mode-option"><input type="checkbox" id="ws-watches-enabled" aria-describedby="ws-watches-help"> <span>Enable Watch email signup</span></label>
+          <p class="settings-hint" id="ws-watches-help">Controls signup in waitlist mode. Price-free preview always keeps email signup open, even when this switch is off. This does not open checkout or grant early access. The fields below set the watch waitlist copy.</p>
+          <button type="button" class="admin-btn" data-jump="watchpage">Manage Watch Page access</button>
+          <p class="settings-hint">Edit the watch signup headline and subtitle in Watch Page → Headline &amp; Subtitle.</p>
+          <label for="ws-watches-button" style="margin-top:0.6rem">Button text</label>
+          <input type="text" id="ws-watches-button" maxlength="60">
+        </div>
+        <p class="settings-hint">Apply email signup availability and copy with Save Settings below.</p>
+      </details>
+      <details class="dashboard-section wp-collapse">
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">Site-wide options</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <div class="form-group">
+          <label class="wp-mode-option"><input type="checkbox" id="wp-weekend-theme"> <span>Samedi / Dimanche weekend theme (subtle tint on Sat &amp; Sun)</span></label>
+          <label class="wp-mode-option"><input type="checkbox" id="wp-bundles-enabled"> <span>Show bundles on the Clothing page</span></label>
+          <p class="settings-hint">Clothing bundles are managed here and saved with Save Settings, independently of the Watch Page.</p>
+          <div class="dashboard-section-header">
+            <span class="dashboard-section-label">Clothing bundles</span>
+            <button id="wp-add-bundle-btn" class="admin-btn" type="button">+ Add Bundle</button>
+          </div>
+          <div id="wp-bundles-list"></div>
+        </div>
+        <div class="form-group">
+          <label for="wp-instagram">Instagram URL</label>
+          <input type="text" id="wp-instagram" maxlength="300">
+        </div>
+        <p class="settings-hint">Apply theme, bundles and Instagram changes with Save Settings below.</p>
+      </details>
+      <div class="settings-save-bar">
+        <p class="settings-hint">Save pending Site Settings, including collapsed sections.</p>
+        <button type="button" id="sitesettings-save-btn" class="admin-btn admin-btn-primary">Save Settings</button>
+      </div>
+    </div>
+
+    <div id="tab-marketing" class="tab-panel" style="display:none">
+      <div class="admin-toolbar">
+        <h1 class="admin-title">Marketing</h1>
+      </div>
+
+      <p class="settings-intro">Prepare a waitlist email or download the watch page QR code. Sending an email is a separate action from saving page settings.</p>
+      <section class="dashboard-section campaign-workspace" id="campaign-composer" aria-label="Email campaign composer">
+        <p class="dashboard-section-label">Email studio · Update 45</p>
+        <p class="settings-hint">Choose a composition, write your note, then review the exact email and eligible recipient count. Preview never sends an email. Drafts stay in this browser tab only.</p>
+        <fieldset id="campaign-fields">
+        <p class="campaign-step">01 / Composition</p>
+        <div id="campaign-themes" class="campaign-theme-list"><div class="campaign-loading" aria-label="Loading email themes"></div></div>
+        <p id="campaign-theme-status" class="campaign-status" role="status"></p>
+        <button type="button" id="campaign-theme-retry" class="admin-btn" hidden>Reload themes</button>
+        <p class="campaign-step">02 / Your note</p>
+        <button type="button" id="campaign-write-settings" class="admin-btn">Write from current watch settings</button>
+        <p class="settings-hint">Fills the title and body from saved watch settings, including combined preview, waitlist, countdown and private-access options. Save any pending settings first. You can edit everything before sending.</p>
+        <div class="form-group">
+          <label for="blast-category">Send to</label>
+          <select id="blast-category" class="form-input">
+            <option value="all">Everyone</option>
+            <option value="watches">Watches waitlist</option>
+            <option value="shop">Shop waitlist</option>
+            <option value="bud">Bud waitlist</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="blast-subject">Subject</label>
+          <input type="text" id="blast-subject" maxlength="200" class="form-input">
+        </div>
+        <div class="form-group">
+          <label for="blast-message">Message</label>
+          <textarea id="blast-message" class="form-input form-textarea" rows="6" maxlength="10000"></textarea>
+        </div>
+        <div class="form-group"><label for="blast-cta-text">Button label · optional</label><input id="blast-cta-text" class="form-input" maxlength="100" placeholder="Explore the collection"></div>
+        <div class="form-group"><label for="blast-cta-path">Button destination · same-site path</label><input id="blast-cta-path" class="form-input" maxlength="500" placeholder="/watches.html"><p class="settings-hint">Use both button fields or leave both empty. A campaign does not grant private access. Never paste a private customer link into a blast.</p></div>
+        </fieldset>
+        <div class="campaign-actions"><button type="button" id="blast-preview-btn" class="admin-btn admin-btn-primary" disabled>Generate preview &amp; recipient count</button></div>
+        <div class="campaign-review">
+          <p class="campaign-step">03 / Review before sending</p>
+          <div id="campaign-empty" class="campaign-empty">Your email will appear here.<br>Generate a preview after choosing a theme and writing your note.</div>
+          <iframe id="campaign-preview" class="campaign-frame" title="Campaign email preview" sandbox="" referrerpolicy="no-referrer" hidden></iframe>
+          <p id="campaign-preview-summary" class="campaign-status" aria-live="polite">No current preview.</p>
+          <label class="campaign-consent"><input type="checkbox" id="campaign-reviewed" disabled><span>I have reviewed this preview and its recipient count.</span></label>
+          <label class="campaign-consent"><input type="checkbox" id="campaign-consent"><span>I have permission to send this campaign to the selected recipients.</span></label>
+          <button type="button" id="blast-send-btn" class="admin-btn admin-btn-primary" disabled>Confirm campaign send</button>
+          <p id="blast-config-note" class="campaign-status" role="status"></p>
+        </div>
+        <p class="campaign-step">Optional / Send yourself a test</p>
+        <div class="form-group"><label for="campaign-test-email">Your email address</label><input type="email" id="campaign-test-email" class="form-input" maxlength="254" autocomplete="email" placeholder="Your own email address"></div>
+        <button type="button" id="campaign-test-send" class="admin-btn" disabled>Send one test email</button>
+        <p class="settings-hint">A test goes only to the address above, not to the waitlist. Provider acceptance is not a guarantee of inbox delivery.</p>
+        <p id="blast-status" class="campaign-status" role="status" aria-live="polite"></p>
+      </section>
+
+      <details class="dashboard-section wp-collapse">
+        <summary class="dashboard-section-header wp-collapse-summary">
+          <span class="dashboard-section-label">QR code — links to the watch page</span>
+          <span class="wp-collapse-caret" aria-hidden="true">▾</span>
+        </summary>
+        <div class="wp-inline-row" style="align-items:center;">
+          <img id="qr-img" alt="QR code" style="width:220px;height:220px;background:#fff;padding:10px;">
+          <div>
+            <p class="loading-text" style="display:block;">Scans open samedietdimanche.com/watches.html</p>
+            <a id="qr-download" class="admin-btn" download="samedi-et-dimanche-qr.png" href="#">Download PNG</a>
+          </div>
+        </div>
+      </details>
     </div>
 
   </main>
@@ -196,20 +631,22 @@
           <textarea id="form-description" class="form-input form-textarea" rows="3"></textarea>
         </div>
         <div class="form-group">
-          <label class="form-label">Product Image</label>
+          <label class="form-label" for="form-image">Product photographs</label>
           <div class="image-upload-area" id="image-upload-area">
             <img id="image-preview" class="image-preview" src="" alt="" style="display:none">
             <div id="image-placeholder" class="image-placeholder">
               <span class="upload-icon">+</span>
-              <span class="upload-text">Click to upload image</span>
+              <span class="upload-text">Click to add photographs</span>
             </div>
-            <input type="file" id="form-image" accept="image/*" class="file-input-hidden">
+            <input type="file" id="form-image" accept="image/*" multiple class="file-input-hidden" aria-describedby="product-images-status">
           </div>
-          <button type="button" id="remove-image-btn" class="remove-image-btn" style="display:none">Remove Image</button>
+          <button type="button" id="remove-image-btn" class="remove-image-btn" style="display:none">Remove cover photo</button>
+          <p id="product-images-status" role="status">Up to 12 photographs. The first photograph is the cover. Use the arrows to reorder.</p>
+          <div id="product-photo-list" class="product-photo-list"></div>
         </div>
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="form-price">Price (USD)</label>
+            <label class="form-label" for="form-price">Price (CAD)</label>
             <input type="number" id="form-price" class="form-input" step="0.01" min="0.50" required>
           </div>
           <div class="form-group">
@@ -222,6 +659,13 @@
             </select>
           </div>
         </div>
+        <fieldset id="product-variants" class="product-variants">
+          <legend>Clothing sizes &amp; colors</legend>
+          <p class="variant-help">One row per size and color combination. Stock is tracked separately. Disable a row to stop selling it without removing its options. Leave empty for a piece without options.</p>
+          <div id="product-variant-list"></div>
+          <p id="product-variants-status" role="status"></p>
+          <button type="button" id="product-variant-add" class="admin-btn">+ Add variant</button>
+        </fieldset>
         <div class="form-actions">
           <button type="button" id="cancel-btn" class="admin-btn">Cancel</button>
           <button type="submit" id="save-btn" class="admin-btn admin-btn-primary">Save</button>
@@ -315,6 +759,10 @@
   <div id="toast" class="toast"></div>
 
   <script src="js/petals.js"></script>
-  <script src="js/admin.js"></script>
+  <script src="js/admin.js?v=56"></script>
+  <script src="js/admin-marketing.js?v=45"></script>
+  <script src="js/admin-watch-pricing.js?v=watch18"></script>
+  <script src="js/admin-preorders.js?v=44"></script>
+  <script src="js/admin-preorder-invitations.js?v=39"></script>
 </body>
 </html>

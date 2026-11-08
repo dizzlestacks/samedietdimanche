@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script src="js/preorder-access.js?v=38"></script>
+  <link rel="stylesheet" href="css/preorders.css?v=38">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Samedi Et Dimanche — WATCHES. Luxury automatic watches. Join the waitlist.">
+  <meta name="description" content="Samedi Et Dimanche — five original watches. Choose your model, or customize its face and band.">
   <title>WATCHES — SAMEDI ET DIMANCHE</title>
 
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32.png">
@@ -15,8 +17,24 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="css/waitlist.css">
+  <link rel="stylesheet" href="css/watch-customizer.css?v=watch16">
+  <link rel="stylesheet" href="css/cart.css?v=watch14">
+  <link rel="stylesheet" href="css/watch-catalog.css?v=41">
+  <meta property="og:title" content="WATCHES — SAMEDI ET DIMANCHE">
+  <meta property="og:description" content="Five original watches. Choose a complete model or customize its face and band.">
+  <meta property="og:image" content="https://www.samedietdimanche.com/img/newlogo.png">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="WATCHES — SAMEDI ET DIMANCHE">
+  <meta name="twitter:description" content="Five original watches. Choose a complete model or customize its face and band.">
+  <meta name="twitter:image" content="https://www.samedietdimanche.com/img/newlogo.png">
+  <link rel="canonical" href="https://www.samedietdimanche.com/watches.html">
+  <script src="js/early-access.js?v=24"></script>
+  <link rel="stylesheet" href="css/watch-zoom.css?v=33">
+  <link rel="stylesheet" href="css/site-brand.css?v=34">
+  <link rel="stylesheet" href="css/watch-launch-preview.css?v=37">
 </head>
-<body>
+<body class="watch-atelier watch-browser">
 
   <div id="page-transition"></div>
   <div class="noise"></div>
@@ -24,33 +42,190 @@
 
   <main class="waitlist-page">
 
-    <a href="index.html" class="wl-logo animate-in" style="--delay:0s; text-decoration:none;">
-      <img src="img/newlogo.png" alt="Samedi Et Dimanche" class="logo">
-      <div class="wl-rule"></div>
-      <span class="wl-tagline">Where The Week Ends</span>
-    </a>
+    <div class="wa-experience" id="watch-experience" data-face="black" data-band="black">
+      <nav class="wa-topbar" aria-label="Watch navigation"><a href="index.html" class="wl-logo" style="text-decoration:none"><img src="img/newlogo.png" alt="Samedi Et Dimanche — Home" class="logo"></a><a class="wa-cart-link" href="favorites.html">Favorites</a><a class="wa-cart-link" href="cart.html">Cart <span data-cart-count>0</span></a></nav>
+      <section id="wa-mode-status" class="wa-mode-status" role="status"><p id="wa-mode-message">Loading watch availability…</p><button type="button" class="wa-retry" id="wa-mode-retry" hidden>Retry availability</button></section>
+      <div class="wa-collections" id="wa-collections" role="group" aria-label="Watch collections" hidden>
+        <button type="button" id="wa-collection-men" aria-pressed="true" aria-controls="watch-catalog watch-customizer">Men's</button>
+        <button type="button" id="wa-collection-women" aria-pressed="false" aria-controls="watch-womens-preview">Women's</button>
+      </div>
+      <section class="wa-catalog" id="watch-catalog" data-view="grid" data-selected-base="black-black" aria-labelledby="wa-catalog-title" hidden>
+        <h1 class="wa-visually-hidden" id="wa-catalog-title" tabindex="-1">Watches</h1>
+        <div class="wa-view-toolbar" role="group" aria-label="Watch catalog view">
+          <label for="wa-view-select">View</label>
+          <select id="wa-view-select" aria-controls="wa-product-track"><option value="grid" selected>Grid</option><option value="carousel">Carousel</option><option value="list">List</option><option value="compact">Compact</option></select>
+        </div>
+        <p id="wa-view-status" role="status"></p>
+        <div class="wa-product-grid" id="wa-product-track" tabindex="0" role="region" aria-label="Watch models. Swipe or use left and right arrow keys." aria-roledescription="carousel">
+          <article class="wa-product" data-watch-product="black-black" data-face="black" data-band="black">
+            <div class="wa-product-photo" role="img" aria-label="Black face, Black band studio visualization">
+              <img class="wa-layer wa-layer-band" src="img/watch-atelier-v6/band-black.png?v=watch14" alt="" width="1000" height="1333" fetchpriority="high">
+              <img class="wa-layer wa-layer-case" src="img/watch-atelier-v6/case.png?v=watch14" alt="" width="1000" height="1333">
+              <img class="wa-layer wa-layer-face" src="img/watch-atelier-v6/face-black.png?v=watch14" alt="" width="1000" height="1333">
+            </div>
+            <h2><button type="button" class="wa-product-select" data-product-select aria-pressed="true">Black / Black</button></h2><p class="wa-notice">Black face · Black band</p><p class="wa-product-price" data-product-price>CAD 750.00</p>
+            <div class="wa-product-actions"><button class="wa-save" type="button" data-product-add disabled>Add to cart</button></div>
+            <p class="wa-status" data-product-status role="status"></p><button class="wa-retry" type="button" data-product-retry hidden>Retry preview</button><a class="wa-cart-link" href="cart.html" data-product-cart hidden>View cart →</a>
+          </article>
+          <article class="wa-product" data-watch-product="black-camouflage" data-face="black" data-band="camouflage">
+            <div class="wa-product-photo" role="img" aria-label="Black face, Camouflage band studio visualization">
+              <img class="wa-layer wa-layer-band" src="img/watch-atelier-v6/band-camouflage.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+              <img class="wa-layer wa-layer-case" src="img/watch-atelier-v6/case.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+              <img class="wa-layer wa-layer-face" src="img/watch-atelier-v6/face-black.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+            </div>
+            <h2><button type="button" class="wa-product-select" data-product-select aria-pressed="false">Black / Camouflage</button></h2><p class="wa-notice">Black face · Camouflage band</p><p class="wa-product-price" data-product-price>CAD 1,000.00</p>
+            <div class="wa-product-actions"><button class="wa-save" type="button" data-product-add disabled>Add to cart</button></div>
+            <p class="wa-status" data-product-status role="status"></p><button class="wa-retry" type="button" data-product-retry hidden>Retry preview</button><a class="wa-cart-link" href="cart.html" data-product-cart hidden>View cart →</a>
+          </article>
+          <article class="wa-product" data-watch-product="red-red" data-face="red" data-band="red">
+            <div class="wa-product-photo" role="img" aria-label="Red face, Red band studio visualization">
+              <img class="wa-layer wa-layer-band" src="img/watch-atelier-v6/band-red.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+              <img class="wa-layer wa-layer-case" src="img/watch-atelier-v6/case.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+              <img class="wa-layer wa-layer-face" src="img/watch-atelier-v6/face-red.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+            </div>
+            <h2><button type="button" class="wa-product-select" data-product-select aria-pressed="false">Red / Red</button></h2><p class="wa-notice">Red face · Red band</p><p class="wa-product-price" data-product-price>CAD 2,000.00</p>
+            <div class="wa-product-actions"><button class="wa-save" type="button" data-product-add disabled>Add to cart</button></div>
+            <p class="wa-status" data-product-status role="status"></p><button class="wa-retry" type="button" data-product-retry hidden>Retry preview</button><a class="wa-cart-link" href="cart.html" data-product-cart hidden>View cart →</a>
+          </article>
+          <article class="wa-product" data-watch-product="blue-blue" data-face="blue" data-band="blue">
+            <div class="wa-product-photo" role="img" aria-label="Blue face, Blue band studio visualization">
+              <img class="wa-layer wa-layer-band" src="img/watch-atelier-v6/band-blue.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+              <img class="wa-layer wa-layer-case" src="img/watch-atelier-v6/case.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+              <img class="wa-layer wa-layer-face" src="img/watch-atelier-v6/face-blue.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+            </div>
+            <h2><button type="button" class="wa-product-select" data-product-select aria-pressed="false">Blue / Blue</button></h2><p class="wa-notice">Blue face · Blue band</p><p class="wa-product-price" data-product-price>CAD 2,000.00</p>
+            <div class="wa-product-actions"><button class="wa-save" type="button" data-product-add disabled>Add to cart</button></div>
+            <p class="wa-status" data-product-status role="status"></p><button class="wa-retry" type="button" data-product-retry hidden>Retry preview</button><a class="wa-cart-link" href="cart.html" data-product-cart hidden>View cart →</a>
+          </article>
+          <article class="wa-product" data-watch-product="green-green" data-face="green" data-band="green">
+            <div class="wa-product-photo" role="img" aria-label="Green face, Green band studio visualization">
+              <img class="wa-layer wa-layer-band" src="img/watch-atelier-v6/band-green.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+              <img class="wa-layer wa-layer-case" src="img/watch-atelier-v6/case.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+              <img class="wa-layer wa-layer-face" src="img/watch-atelier-v6/face-green.png?v=watch14" alt="" width="1000" height="1333" loading="lazy">
+            </div>
+            <h2><button type="button" class="wa-product-select" data-product-select aria-pressed="false">Green / Green</button></h2><p class="wa-notice">Green face · Green band</p><p class="wa-product-price" data-product-price>CAD 2,000.00</p>
+            <div class="wa-product-actions"><button class="wa-save" type="button" data-product-add disabled>Add to cart</button></div>
+            <p class="wa-status" data-product-status role="status"></p><button class="wa-retry" type="button" data-product-retry hidden>Retry preview</button><a class="wa-cart-link" href="cart.html" data-product-cart hidden>View cart →</a>
+          </article>
+        </div>
+        <div class="wa-catalog-actions"><div class="wa-carousel-controls" id="wa-carousel-controls"><button type="button" id="wa-carousel-prev" aria-label="Previous watch" disabled>←</button><span id="wa-carousel-position" role="status" aria-live="polite">1 / 5</span><button type="button" id="wa-carousel-next" aria-label="Next watch">→</button></div><button class="wa-save" type="button" id="wa-customize-selected" aria-describedby="wa-selected-model" disabled>Customize watch</button><span id="wa-selected-model" class="wa-visually-hidden" aria-live="polite">Selected model: Black / Black</span></div>
+        <div class="wa-catalog-foot"><button class="wa-retry" type="button" id="wa-catalog-retry" hidden>Retry pricing</button>
+        </div>
+      </section>
+      <section class="wa-womens-preview" id="watch-womens-preview" aria-labelledby="wa-womens-title" hidden>
+        <h2 class="wa-visually-hidden" id="wa-womens-title">Women's watches</h2>
+      </section>
+      <details class="wa-device-notices" id="wa-device-notices" hidden><summary>Device cart notice</summary><p data-cart-notice role="status"></p></details>
+      <section class="wa-customizer" id="watch-customizer" aria-labelledby="wa-custom-title" hidden>
+        <div class="wa-workbench-return"><button class="wa-save wa-save-secondary" type="button" id="wa-return-catalog">← All watches</button><span class="wa-base-label">Original model: <strong id="wa-base-name">Black / Black</strong></span></div>
+        <header class="wa-section-heading">
+          <p class="wa-eyebrow">Watch configuration</p>
+          <h2 class="wa-title" id="wa-custom-title">Make it yours</h2>
+          <p class="wa-copy">Choose your face, then your band.</p>
+        </header>
+        <ol class="wa-progress" aria-label="Watch customization progress">
+          <li><button type="button" data-wizard-step="0" aria-controls="wa-face-selector" aria-current="step">01 / Face</button></li>
+          <li><button type="button" data-wizard-step="1" aria-controls="wa-band-selector">02 / Band</button></li>
+          <li><button type="button" data-wizard-step="2" aria-controls="wa-review">03 / Review</button></li>
+        </ol>
+        <p class="wa-step-caption" id="wa-step-caption" role="status">Step 1 of 3 · Face</p>
+        <div class="wa-workbench">
+          <div>
+            <div class="wa-preview" id="wa-preview" role="img" aria-label="Selected combination: Black face, Black band">
+              <img class="wa-layer wa-layer-band" id="wa-band-layer" src="img/watch-atelier-v6/band-black.png?v=watch14" alt="" width="1000" height="1333">
+              <img class="wa-layer wa-layer-case" id="wa-case-layer" src="img/watch-atelier-v6/case.png?v=watch14" alt="" width="1000" height="1333">
+              <img class="wa-layer wa-layer-face" id="wa-face-layer" src="img/watch-atelier-v6/face-black.png?v=watch14" alt="" width="1000" height="1333">
+            </div>
+            <p class="wa-preview-caption" id="wa-studio-disclosure">Original dial artwork, including its hands and markings. Color variants and studio assembly are illustrative, not a finished-product photograph.</p>
+            <div class="wa-status wa-image-status" id="wa-preview-status" role="status"></div>
+          </div>
+          <div class="wa-selectors">
+            <div class="wa-selector" id="wa-face-selector" tabindex="0" role="group" aria-label="Face color. Swipe or use arrow keys to change.">
+              <div class="wa-selector-top"><span class="wa-selector-label">01 / Face</span><span class="wa-selection-name" id="wa-face-name" aria-live="polite">Black</span></div>
+              <div class="wa-select-row">
+                <button type="button" class="wa-arrow" data-step="face:-1" aria-label="Previous face color">←</button>
+                <div class="wa-swatches" id="wa-face-swatches" role="group" aria-label="Face colors">
+                  <button type="button" class="wa-swatch" data-color="black" aria-label="Black face" aria-pressed="true" style="--swatch:#24252a" disabled></button>
+                  <button type="button" class="wa-swatch" data-color="red" aria-label="Red face" aria-pressed="false" style="--swatch:#943c42" disabled></button>
+                  <button type="button" class="wa-swatch" data-color="blue" aria-label="Blue face" aria-pressed="false" style="--swatch:#344d78" disabled></button>
+                  <button type="button" class="wa-swatch" data-color="green" aria-label="Green face" aria-pressed="false" style="--swatch:#3d6654" disabled></button>
+                </div>
+                <button type="button" class="wa-arrow" data-step="face:1" aria-label="Next face color">→</button>
+              </div>
+              <p class="wa-selector-hint">Swipe this row to change the face only.</p>
+            </div>
+            <div class="wa-selector" id="wa-band-selector" tabindex="0" role="group" aria-label="Band color. Swipe or use arrow keys to change." hidden>
+              <div class="wa-selector-top"><span class="wa-selector-label">02 / Band</span><span class="wa-selection-name" id="wa-band-name" aria-live="polite">Black</span></div>
+              <div class="wa-select-row">
+                <button type="button" class="wa-arrow" data-step="band:-1" aria-label="Previous band color">←</button>
+                <div class="wa-swatches" id="wa-band-swatches" role="group" aria-label="Band colors">
+                  <button type="button" class="wa-swatch" data-color="black" aria-label="Black band" aria-pressed="true" style="--swatch:#24252a" disabled></button>
+                  <button type="button" class="wa-swatch" data-color="red" aria-label="Red band" aria-pressed="false" style="--swatch:#943c42" disabled></button>
+                  <button type="button" class="wa-swatch" data-color="green" aria-label="Green band" aria-pressed="false" style="--swatch:#3d6654" disabled></button>
+                  <button type="button" class="wa-swatch" data-color="blue" aria-label="Blue band" aria-pressed="false" style="--swatch:#344d78" disabled></button>
+                  <button type="button" class="wa-swatch" data-color="camouflage" aria-label="Camouflage band" aria-pressed="false" style="--swatch:linear-gradient(135deg,#57624b 0% 30%,#a29773 30% 55%,#303b30 55% 75%,#777453 75%)" disabled></button>
+                </div>
+                <button type="button" class="wa-arrow" data-step="band:1" aria-label="Next band color">→</button>
+              </div>
+              <p class="wa-selector-hint">Swipe this row to change the band only.</p>
+            </div>
+            <div id="wa-review" tabindex="-1" role="group" aria-label="Review selected watch" hidden>
+            <h2 class="wa-review-title">Your combination.</h2>
+            <p class="wa-base-label" id="wa-base-origin">Original: Black face / Black band.</p>
+            <div class="wa-review-edit"><span id="wa-review-face">Black face</span><button type="button" data-edit-step="0">Edit face</button></div>
+            <div class="wa-review-edit"><span id="wa-review-band">Black band</span><button type="button" data-edit-step="1">Edit band</button></div>
+            <div class="wa-price-breakdown" aria-live="polite">
+              <div><span>Original base watch</span><strong id="wa-base-price">Checking pricing…</strong></div>
+              <div><span>Face change · once</span><strong id="wa-face-price">Checking pricing…</strong></div>
+              <div><span>Band change · once</span><strong id="wa-band-price">Checking pricing…</strong></div>
+              <div class="wa-price-total"><span>Watch subtotal</span><strong id="wa-selection-price">—</strong></div>
+            </div>
+            <p class="wa-notice" id="wa-price-notice">Your original model + applicable changes. Checkout is unavailable.</p>
+            <button type="button" class="wa-retry" id="wa-pricing-retry" hidden>Retry pricing</button>
+            <button type="button" class="wa-save" id="wa-add-cart" disabled>Add to cart</button>
+            <button type="button" class="wa-save wa-save-secondary" id="wa-save" disabled>Save this design</button>
+            <p class="wa-status" id="wa-add-status" role="status"></p><a class="wa-cart-link" id="wa-view-cart" href="cart.html" hidden>View cart →</a>
+            <noscript><p class="wa-notice">Black face / Black band shown. Enable JavaScript to customize or use saved designs.</p></noscript>
+            <p class="wa-notice">Designs are saved on this device only. Custom watch payments are unavailable. Saving is not an order, reservation, or guarantee of availability.</p>
+            <p class="wa-status" id="wa-save-status" role="status"></p>
+            </div>
+            <div class="wa-wizard-controls"><button type="button" class="wa-save wa-save-secondary" id="wa-back" disabled>Back</button><button type="button" class="wa-save" id="wa-next">Next: band</button></div>
+          </div>
+        </div>
+      <section class="wa-saved" id="wa-saved" aria-labelledby="wa-saved-title">
+        <div class="wa-saved-heading"><h3 id="wa-saved-title">Your saved designs</h3><span class="wa-saved-count" id="wa-saved-count">0 designs</span></div>
+        <ul class="wa-saved-list" id="wa-saved-list"></ul>
+        <p class="wa-notice" id="wa-design-migration" role="status"></p>
+        <p class="wa-empty" id="wa-saved-empty">A place for your favorites. Choose a face and band above, then save the combination here.</p>
+      </section>
+      </section>
+    </div>
 
+    <section id="watch-waitlist" aria-label="Watch waitlist" hidden>
     <div class="wl-cta-text animate-in" style="--delay:0.25s">
       <p class="wl-cta-headline" id="wl-headline">Be First to Know</p>
       <p class="wl-cta-sub" id="wl-sub">Exclusive early access for waitlist members</p>
     </div>
 
-    <div id="watch-shop" class="watch-shop animate-in" style="--delay:0.4s; display:none"></div>
+    <div id="sd-countdown" class="sd-countdown" style="display:none"></div>
+    <div id="sd-edition" class="sd-edition" style="display:none"></div>
 
     <form class="wl-form animate-in" style="--delay:0.4s" id="waitlist-form" data-category="watches">
       <div class="wl-input-wrap">
         <input type="email" id="wl-email" class="wl-input" placeholder="your@email.com" autocomplete="email" required>
         <button type="submit" class="wl-btn">Join the List</button>
       </div>
-      <p class="wl-msg" id="wl-msg"></p>
+      <p class="wl-msg" id="wl-msg" role="status" aria-live="polite"></p>
+      <p class="wl-cta-sub">By joining, you agree to receive watch drop updates and private preorder invitations by email.</p>
     </form>
 
+    <div id="sd-share" class="sd-share"></div>
+
     <div class="wl-follow-reveal" id="wl-follow-reveal">
-      <a href="https://www.instagram.com/samedietdimanche.official" target="_blank" class="wl-instagram">
+      <a href="https://www.instagram.com/samedietdimanche.ca" target="_blank" class="wl-instagram">
         Follow on Instagram
       </a>
     </div>
-
     <details class="wl-details-toggle animate-in" style="--delay:0.55s">
       <summary class="wl-details-summary">
         <span class="wl-details-label">The Details</span>
@@ -86,6 +261,7 @@
         </div>
       </div>
     </details>
+    </section>
 
   </main>
 
@@ -95,7 +271,16 @@
 
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
   <script src="js/rose-petals.js"></script>
-  <script src="js/waitlist.js"></script>
-  <script src="js/watch-page.js"></script>
+  <script src="js/waitlist.js?v=55"></script>
+  <script src="js/watch-page.js?v=55"></script>
+  <script src="js/shared-cart.js?v=30"></script>
+  <script src="js/watch-catalog-views.js?v=watch18"></script>
+  <script src="js/watch-favorites.js?v=watch18"></script>
+  <script src="js/watch-wizard.js?v=21"></script>
+  <script src="js/watch-customizer.js?v=watch14"></script>
+  <script src="js/site-extras.js"></script>
+  <script src="js/site-cart.js?v=29"></script>
+  <script src="js/watch-zoom.js?v=40"></script>
+<script src="js/preorder-notice.js?v=56"></script>
 </body>
 </html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script src="js/preorder-access.js?v=38"></script>
+  <link rel="stylesheet" href="css/preorders.css?v=38">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cart — Samedi Et Dimanche</title>
+  <meta name="description" content="Your watches and collection pieces. CAD checkout with PayPal, free worldwide shipping, and Canadian GST/HST calculated for your destination.">
+  <link rel="icon" href="img/favicon-32.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/waitlist.css">
+  <link rel="stylesheet" href="css/watch-customizer.css?v=watch14">
+  <link rel="stylesheet" href="css/cart.css?v=css29">
+  <script src="js/early-access.js?v=24"></script>
+  <link rel="stylesheet" href="css/site-brand.css?v=34">
+</head>
+<body class="cart-page watch-atelier">
+<main class="waitlist-page">
+  <div class="wa-experience">
+    <nav class="shared-nav" aria-label="Store navigation"><a href="index.html"><img class="logo" src="img/newlogo.png" alt="Samedi Et Dimanche"></a><a href="watches.html">Watches</a><a href="shop.html">Shop</a><a href="favorites.html">Favorites</a><a href="cart.html" aria-current="page">Cart <span data-cart-count>0</span></a></nav>
+    <h1>Your weekend, collected.</h1>
+    <p class="wa-copy">Your watch combinations and collection pieces, together.</p>
+    <p data-cart-notice role="status"></p>
+    <section class="wa-cart" id="shared-cart" aria-label="Shopping cart" aria-busy="true">
+      <ul class="wa-cart-list" id="cart-lines"></ul>
+      <div class="wa-cart-empty" id="cart-empty"><strong>A little room for something yours.</strong><p>Build a watch or browse the collection.</p><a href="watches.html">Customize a watch →</a> <a href="shop.html">Browse collection →</a></div>
+      <div class="wa-cart-total"><span>Subtotal · CAD</span><strong id="cart-total">Checking…</strong></div>
+      <p class="wa-status" id="cart-status" role="status"></p>
+      <button type="button" class="wa-retry" id="cart-retry" hidden>Retry pricing</button>
+      <button type="button" class="wa-save" id="cart-checkout" disabled>Checking checkout…</button>
+      <p class="wa-notice">Free worldwide shipping · CAD. <span id="checkout-tax-notice">Any applicable sales tax is shown before payment.</span> International import duties and local taxes may be due on arrival. Cart items are not reserved.</p>
+      <section id="checkout-panel" hidden aria-label="PayPal checkout">
+        <h2>Shipping &amp; payment</h2>
+        <form id="checkout-address" class="checkout-address">
+          <label>Full name<input name="name" autocomplete="shipping name" maxlength="150" required></label>
+          <label>Email<input name="email" type="email" autocomplete="email" maxlength="150" required></label>
+          <label>Country<select name="country" autocomplete="shipping country" required></select></label>
+          <label>Province / state<input name="region" autocomplete="shipping address-level1" list="checkout-provinces" maxlength="150"><datalist id="checkout-provinces"></datalist><small>Canada: use the two-letter province code, e.g. ON.</small></label>
+          <label>Street address<input name="line1" autocomplete="shipping address-line1" maxlength="150" required></label>
+          <label>Apartment / unit (optional)<input name="line2" autocomplete="shipping address-line2" maxlength="150"></label>
+          <label>City<input name="city" autocomplete="shipping address-level2" maxlength="150" required></label>
+          <label>Postal / ZIP code<input name="postalCode" autocomplete="shipping postal-code" maxlength="150"></label>
+          <label id="preorder-confirmation" hidden><input id="preorder-accepted" type="checkbox"> I understand this is a preorder, paid in full now. <span id="preorder-shipping-note"></span></label>
+          <button class="wa-save" type="submit">Review total</button>
+        </form>
+        <div id="checkout-summary" aria-live="polite"></div>
+        <div id="paypal-buttons"></div>
+        <button type="button" id="checkout-recover" class="wa-save" hidden>Check payment status</button>
+        <button type="button" id="checkout-cancel" class="wa-retry" hidden>Cancel unpaid checkout</button>
+        <p id="checkout-message" class="wa-notice" role="status"></p>
+      </section>
+    </section>
+  </div>
+</main>
+  <script src="js/shared-cart.js?v=30"></script>
+  <script src="js/cart-page.js?v=57"></script>
+  <link rel="stylesheet" href="css/checkout.css?v=paypal1">
+  <script src="js/paypal-checkout.js?v=46"></script>
+  <script src="js/preorder-notice.js?v=57"></script>
+</body>
+</html>

@@ -7,17 +7,19 @@
     "node": ">=20"
   },
   "scripts": {
-    "start": "node server/index.js",
-    "seed": "node server/seed-products.js"
+    "start": "node server/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
+  "overrides": {
+    "path-to-regexp": "^8.4.2"
+  },
   "dependencies": {
-    "express": "^5.2.1",
-    "multer": "^2.1.0",
-    "stripe": "^20.4.0",
-    "stripe-replit-sync": "^1.0.0"
+    "@replit/connectors-sdk": "^0.6.0",
+    "express": "^5.3.0",
+    "multer": "^2.5.0",
+    "pg": "^8.22.0"
   }
 }

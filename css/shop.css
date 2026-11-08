@@ -524,3 +524,49 @@
     font-size: 0.45rem;
   }
 }
+
+/* --- Bundles --- */
+.bundles-section, .reviews-section { width: 100%; max-width: 1000px; margin: 3.5rem auto 0; padding: 0 1rem; }
+.bundle-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.2rem; }
+.bundle-card {
+  border: 1px solid rgba(212,175,55,0.25); padding: 1.4rem;
+  background: rgba(255,255,255,0.02); text-align: center;
+}
+.bundle-name { font-family: 'Emilea', 'Cormorant Garamond', serif; font-size: 1.25rem; color: #e8e6e1; margin: 0 0 0.4rem; }
+.bundle-note { font-size: 0.7rem; letter-spacing: 0.12em; opacity: 0.7; margin: 0 0 0.6rem; }
+.bundle-items { font-size: 0.72rem; opacity: 0.85; line-height: 1.7; margin: 0 0 0.8rem; }
+.bundle-price { font-family: 'Emilea', 'Cormorant Garamond', serif; font-size: 1.15rem; color: #d4af37; margin: 0 0 0.9rem; }
+.bundle-buy {
+  background: none; border: 1px solid #d4af37; color: #d4af37; cursor: pointer;
+  font-family: 'Montserrat', sans-serif; font-size: 0.62rem; letter-spacing: 0.25em;
+  text-transform: uppercase; padding: 0.7rem 1.6rem; transition: all 0.3s ease;
+}
+.bundle-buy:hover { background: rgba(212,175,55,0.12); }
+
+/* --- Reviews --- */
+.reviews-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.1rem; }
+.review-card { border: 1px solid rgba(255,255,255,0.1); padding: 1.1rem 1.2rem; background: rgba(255,255,255,0.02); }
+.review-card-stars { color: #d4af37; font-size: 0.8rem; letter-spacing: 0.15em; margin-bottom: 0.4rem; }
+.review-card-text { font-size: 0.8rem; line-height: 1.65; opacity: 0.85; margin: 0 0 0.6rem; }
+.review-card-photo { width: 100%; aspect-ratio: 1; object-fit: cover; margin-bottom: 0.6rem; }
+.review-card-name { font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase; color: #d4af37; }
+.review-form-wrap { text-align: center; margin-top: 1.6rem; }
+.review-toggle {
+  background: none; border: 1px solid rgba(255,255,255,0.25); color: inherit; cursor: pointer;
+  font-family: 'Montserrat', sans-serif; font-size: 0.62rem; letter-spacing: 0.25em;
+  text-transform: uppercase; padding: 0.7rem 1.6rem;
+}
+.review-form { max-width: 420px; margin: 1.2rem auto 0; display: flex; flex-direction: column; gap: 0.7rem; text-align: left; }
+.review-form input, .review-form textarea {
+  background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.15);
+  color: inherit; padding: 0.65rem 0.8rem; font-size: 0.8rem; font-family: inherit;
+}
+.review-stars { display: flex; gap: 0.3rem; }
+.review-stars button { background: none; border: none; color: rgba(255,255,255,0.25); font-size: 1.4rem; cursor: pointer; padding: 0; }
+.review-stars button.on { color: #d4af37; }
+.review-submit {
+  background: none; border: 1px solid #d4af37; color: #d4af37; cursor: pointer;
+  font-family: 'Montserrat', sans-serif; font-size: 0.62rem; letter-spacing: 0.25em;
+  text-transform: uppercase; padding: 0.7rem;
+}
+.review-msg { font-size: 0.72rem; letter-spacing: 0.1em; margin: 0; min-height: 1em; }
